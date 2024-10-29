@@ -1,3 +1,6 @@
 venv
 
 *.mp4
+
+.direnv
+.envrc
