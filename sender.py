@@ -1,6 +1,7 @@
 from numpy.lib import split
 import cv2
 from zephyr import Stream
+from mss import mss
 import numpy as np
 import sys
 
@@ -11,6 +12,8 @@ file = sys.argv[sys.argv.index("--source-video")+1] if "--source-video" in sys.a
 y, x = [int(item) for item in (sys.argv[sys.argv.index("--dimensions")+1] if "--dimensions" in sys.argv else "2x2").split("x")]
 
 res_x, res_y = [int(item) for item in (sys.argv[sys.argv.index("--resolution")+1] if "--resolution" in sys.argv else "1920x1080").split("x")]
+
+screenshare = "--screenshare" in sys.argv
 
 print(f'{x=} {y=}')
 
@@ -27,10 +30,15 @@ if __name__ == "__main__":
 
   print("sending to:")
   for url in urls: print(url)
-
-  cap = cv2.VideoCapture(file)
+  if not screenshare:
+    cap = cv2.VideoCapture(file)
+  else:
+      sct = mss()
   while True:
-    ret, frame = cap.read()
+    if not screenshare:
+      ret, frame = cap.read()
+    else:
+        frame = np.array(sct.grab({"top":0, "left":0, "width":res_x, "height":res_y}))
 
     # do horizontal splits
     horizontal_frames = np.array_split(frame, y, axis=0)
