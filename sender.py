@@ -14,26 +14,28 @@ SCREENSHARE = "--screenshare" in sys.argv
 print(f'{X=} {Y=}')
 
 def main_loop(frame_gen, stop_condition=lambda: True):
-    mapping:dict[str, int | Stream] = {}
+    frame = frame_gen()
+
+    mapping = {(x, y): {
+        "stream": Stream(
+            url = f"rtsp://{REMOTE}:8554/frame/{x}/{y}",
+            resolution = (int(RES_X/X), int(RES_Y/Y)),
+            fps = FRAMERATE,
+            bitrate = BITRATE
+        ),
+        "sx":int(len(frame)*(x/X)),
+        "ex":int(len(frame)*((1+x)/X)),
+        "sy":int(len(frame[0])*(y/Y)),
+        "ey":int(len(frame[0])*((1+y)/Y))
+    } for x in range(X) for y in range(Y)}
+
     while stop_condition():
-        frame = frame_gen()
-        for (x, y) in [(x, y) for x in range(X) for y in range(Y)]:
-            if (x, y) not in mapping:
-                mapping[(x, y)] = {
-                    "stream":Stream(
-                        url = f"rtsp://{REMOTE}:8554/frame/{x}/{y}",
-                        resolution=(int(RES_X/X), int(RES_Y/Y)),
-                        fps=FRAMERATE,
-                        bitrate=BITRATE
-                    ),
-                    "sx":int(len(frame)*(x/X)),
-                    "ex":int(len(frame)*((1+x)/X)),
-                    "sy":int(len(frame[0])*(y/Y)),
-                    "ey":int(len(frame[0])*((1+y)/Y))
-                }
-            m = mapping[(x, y)]
+        if frame is None:
+            break
+        for m in [mapping[(x, y)] for x in range(X) for y in range(Y)]:
             final_frame = frame[m["sx"]:m["ex"], m["sy"]:m["ey"]]
             m["stream"].send(final_frame)
+        frame = frame_gen()
 
 if SCREENSHARE:
     import mss
