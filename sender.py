@@ -1,3 +1,4 @@
+from numpy.lib import split
 import cv2
 from zephyr import Stream
 import numpy as np
@@ -9,6 +10,8 @@ file = sys.argv[sys.argv.index("--source-video")+1] if "--source-video" in sys.a
 
 y, x = [int(item) for item in (sys.argv[sys.argv.index("--dimensions")+1] if "--dimensions" in sys.argv else "2x2").split("x")]
 
+res_x, res_y = [int(item) for item in (sys.argv[sys.argv.index("--resolution")+1] if "--resolution" in sys.argv else "1920x1080").split("x")]
+
 print(f'{x=} {y=}')
 
 n = x*y
@@ -17,7 +20,7 @@ if __name__ == "__main__":
   urls = [f"rtsp://{remote}/frame{i}" for i in range(n)]
   streams = [Stream(
     url=url,
-    resolution=(int(1920/x), int(1080/y)),
+    resolution=(int(res_x/x), int(res_y/y)),
     fps=30,
     bitrate="2M"
   ) for url in urls]
