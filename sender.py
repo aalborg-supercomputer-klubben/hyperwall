@@ -13,8 +13,6 @@ SCREENSHARE = "--screenshare" in sys.argv
 
 print(f'{X=} {Y=}')
 
-mapping = {}
-
 def main_loop(frame_gen, stop_condition=lambda: True):
     mapping:dict[str, int | Stream] = {}
     while stop_condition():
