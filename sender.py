@@ -1,9 +1,6 @@
-import cv2
 from zephyr import Stream
-from mss import mss
 import numpy as np
 import sys
-import multiprocessing as mp
 
 # constants and arguments
 REMOTE = sys.argv[sys.argv.index("--remote")+1] if "--remote" in sys.argv else "localhost:8554"
@@ -15,25 +12,35 @@ print(f'{X=} {Y=}')
 
 mapping = {}
 
-cap = cv2.VideoCapture(SOURCE)
-while True:
-    _, frame = cap.read()
-    for (x, y) in [(x, y) for x in range(X) for y in range(Y)]:
-        if (x, y) not in mapping:
-            mapping[(x, y)] = {
-                "stream":Stream(
-                    url = f"rtsp://{REMOTE}:8554/frame/{x}/{y}",
-                    resolution=(int(RES_X/X), int(RES_Y/Y)),
-                    fps=60,
-                    bitrate="30M"
-                ),
-                "sx":int(len(frame)*(x/X)),
-                "ex":int(len(frame)*((1+x)/X)),
-                "sy":int(len(frame[0])*(y/Y)),
-                "ey":int(len(frame[0])*((1+y)/Y))
-            }
-        m = mapping[(x, y)]
-        final_frame = frame[m["sx"]:m["ex"], m["sy"]:m["ey"]]
-        m["stream"].send(final_frame)
+def main_loop(frame_gen, stop_condition=lambda: True):
+    mapping:dict[str, int | Stream] = {}
+    while stop_condition():
+        frame = frame_gen()
+        for (x, y) in [(x, y) for x in range(X) for y in range(Y)]:
+            if (x, y) not in mapping:
+                mapping[(x, y)] = {
+                    "stream":Stream(
+                        url = f"rtsp://{REMOTE}:8554/frame/{x}/{y}",
+                        resolution=(int(RES_X/X), int(RES_Y/Y)),
+                        fps=60,
+                        bitrate="40M"
+                    ),
+                    "sx":int(len(frame)*(x/X)),
+                    "ex":int(len(frame)*((1+x)/X)),
+                    "sy":int(len(frame[0])*(y/Y)),
+                    "ey":int(len(frame[0])*((1+y)/Y))
+                }
+            m = mapping[(x, y)]
+            final_frame = frame[m["sx"]:m["ex"], m["sy"]:m["ey"]]
+            m["stream"].send(final_frame)
 
-    
+if SCREENSHARE:
+    import mss
+    with mss.mss() as sct:
+        capture = lambda: np.array(sct.grab({"top":0, "left":0, "width":RES_X, "height":RES_Y}))
+        main_loop(capture)
+else:
+    import cv2
+    cap = cv2.VideoCapture(SOURCE)
+    capture = lambda: cap.read()[1]
+    main_loop(capture)
