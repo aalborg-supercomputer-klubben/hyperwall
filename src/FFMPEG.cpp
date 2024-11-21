@@ -1,22 +1,43 @@
 #include "ffmpeg.hpp"
+#include <cstdio>
 #include <format>
+#include <opencv2/core/mat.hpp>
 #include <sstream>
 #include <string>
 
-Hyperwall::FFMPEG& Hyperwall::FFMPEG::add(std::string option) {
-  this->options.push_back(option);
+Hyperwall::FFMPEGBuilder& Hyperwall::FFMPEGBuilder::add(const std::string option) {
+  options.push_back(option);
   return *this;
 }
 
-Hyperwall::FFMPEG& Hyperwall::FFMPEG::add(std::string key, std::string value) {
-  this->options.push_back(std::format("{0} {1}", key, value));
+Hyperwall::FFMPEGBuilder& Hyperwall::FFMPEGBuilder::add(const std::string key, const std::string value) {
+  options.push_back(std::format("{} {}", key, value));
   return *this;
 }
 
-std::string Hyperwall::FFMPEG::build() {
+Hyperwall::FFMPEGBuilder& Hyperwall::FFMPEGBuilder::url(const std::string url) {
+  this->_url = url;
+  add(url);
+  return *this;
+}
+
+const Hyperwall::FFMPEG Hyperwall::FFMPEGBuilder::build() {
   std::stringstream ss;
   ss << "ffmpeg ";
-  for(auto option : options)
+  for(auto option : options) {
     ss << option << " ";
-  return ss.str();
+  }
+  ss << ">> ./logs/ffmpeg.stdout 2> ./logs/ffmpeg.stderr";
+  return {ss.str(), _url};
+}
+
+Hyperwall::FFMPEG::FFMPEG(const std::string command, const std::string url) : url(url) {
+  //std::cout << command << std::endl;
+  buffer = popen(command.c_str(), "w");
+}
+
+const void Hyperwall::FFMPEG::write(const cv::Mat& mat) const {
+  //std::cout << url << std::endl;
+  fwrite(mat.data, 1, mat.cols * mat.rows * 3, buffer);
+  fflush(buffer);
 }
