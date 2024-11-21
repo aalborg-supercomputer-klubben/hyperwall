@@ -1,4 +1,0 @@
-zephyr-rtsp
-numpy
-mss
-cv
