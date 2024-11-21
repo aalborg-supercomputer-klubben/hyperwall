@@ -1,11 +1,9 @@
 #include "sender.hpp"
 
-#include <chrono>
 #include <cstdlib>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/opencv.hpp>
 #include <string>
-#include <thread>
 #include <unordered_map>
 
 // TODO: argument parsing
@@ -42,4 +40,9 @@ int main() {
       }
     }
   }
+  for(auto [_, m] : pipes)
+    for(auto [_, pipe] : m)
+      pclose(pipe);
+
+  exit(EXIT_SUCCESS);
 }
