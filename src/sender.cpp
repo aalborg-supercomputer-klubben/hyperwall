@@ -1,21 +1,41 @@
-#include "sender.hpp"
-
 #include <cstdlib>
+#include <format>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/opencv.hpp>
 #include <string>
 #include <unordered_map>
 
-// TODO: argument parsing
-auto X = 1;
-auto Y = 1;
-auto RES_X = 1920;
-auto RES_Y = 1080;
-auto FRAMERATE = 60;
-auto REMOTE = "localhost:8554";
+#include "ffmpeg.hpp"
 
-std::string ffmpeg(int x, int y) {
-    return std::string("ffmpeg -re -f rawvideo -video_size 1920x1080 -pixel_format bgr24 -i pipe: -f rtsp -b:v 2M rtsp://") + REMOTE + "/frame/" + std::to_string(x) + "/" + std::to_string(y);
+// TODO: argument parsing
+const auto X = 1;
+const auto Y = 1;
+const auto RES_X = 1920;
+const auto RES_Y = 1080;
+const auto FRAMERATE = 60;
+const auto REMOTE = "localhost:8554";
+const auto BITRATE = "20M";
+
+const std::string ffmpeg(const int x, const int y) {
+  Hyperwall::FFMPEG obj;
+  return obj.add("-re")
+    .add("-y")
+    .add("-f", "rawvideo")
+    .add("-vcodec", "rawvideo")
+    .add("-pix_fmt", "bgr24")
+    .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
+    .add("-r", std::to_string(FRAMERATE))
+    .add("-i", "-")
+    .add("-c:v", "libx264")
+    .add("-preset", "ultrafast")
+    .add("-f", "rtsp")
+    .add("-rtsp_transport", "tcp")
+    .add("-muxdelay", "0.1")
+    .add("-bsf:v", "dump_extra")
+    .add("-b:v", BITRATE)
+    .add(std::format("rtsp://{}/frame/{}/{}", REMOTE, x, y))
+    .build();
+
 }
 
 int main() {
