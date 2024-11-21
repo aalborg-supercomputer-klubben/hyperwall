@@ -4,3 +4,8 @@ venv
 
 .direnv
 .envrc
+
+build
+result*
+.cache
+logs

@@ -1,22 +1,23 @@
-# asck hyperwall
-hyperwall project for asck
+# Hyperwall
 
-setup consists of a rtsp server, a server sending video and a receiver (e.g. vlc or ffplay)
-## setup
-* run Docker image of rtsp server:
+## Dependencies
+```
+opencv
+ffmpeg
+tmux (optional)
+```
 
-`docker run --rm -it --network=host bluenviron/mediamtx:latest`
-* run sender:
+## Building
+on linux:
 
-`python sender.py --video-source file.mp4 --remote localhost:8554`
-* run receiver:
+```sh
+cmake -B build
+cmake --build build -j4
+```
 
-`python receiver.py --remote localhost:8554`
-* or run ffplay:
-`ffplay rtsp://localhost:8554/frame0`
-
-`ffplay rtsp://localhost:8554/frame1`
-
-`ffplay rtsp://localhost:8554/frame2`
-
-`ffplay rtsp://localhost:8554/frame3`
+## running
+```sh
+./build/sender <args>
+# in another shell
+./scripts/tmux-ffplay.sh
+```
