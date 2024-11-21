@@ -2,7 +2,6 @@
 #include "Sources/FileSource.hpp"
 #include "FFmpeg.hpp"
 #include <string>
-#include <thread>
 #include <unordered_map>
 
 const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const std::string REMOTE, const int x, const int y) {
