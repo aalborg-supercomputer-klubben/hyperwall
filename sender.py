@@ -1,55 +1,49 @@
-from numpy.lib import split
-import cv2
 from zephyr import Stream
-from mss import mss
 import numpy as np
 import sys
 
-remote = sys.argv[sys.argv.index("--remote")+1] if "--remote" in sys.argv else "localhost:8554"
+# constants and arguments
+REMOTE = sys.argv[sys.argv.index("--remote")+1] if "--remote" in sys.argv else "localhost:8554"
+SOURCE = sys.argv[sys.argv.index("--source-video")+1] if "--source-video" in sys.argv else 0
+X, Y = [int(item) for item in (sys.argv[sys.argv.index("--dimensions")+1] if "--dimensions" in sys.argv else "2x2").split("x")]
+RES_X, RES_Y = [int(item) for item in (sys.argv[sys.argv.index("--resolution")+1] if "--resolution" in sys.argv else "1920x1080").split("x")]
+BITRATE = sys.argv[sys.argv.index("--bitrate")+1] if "--bitrate" in sys.argv else "40M"
+FRAMERATE = int(sys.argv[sys.argv.index("--framerate")+1]) if "--framerate" in sys.argv else 60
+SCREENSHARE = "--screenshare" in sys.argv
 
-file = sys.argv[sys.argv.index("--source-video")+1] if "--source-video" in sys.argv else 0
+print(f'{X=} {Y=}')
 
-y, x = [int(item) for item in (sys.argv[sys.argv.index("--dimensions")+1] if "--dimensions" in sys.argv else "2x2").split("x")]
+def main_loop(frame_gen, stop_condition=lambda: True):
+    frame = frame_gen()
 
-res_x, res_y = [int(item) for item in (sys.argv[sys.argv.index("--resolution")+1] if "--resolution" in sys.argv else "1920x1080").split("x")]
+    mapping = {(x, y): {
+        "stream": Stream(
+            url = f"rtsp://{REMOTE}:8554/frame/{x}/{y}",
+            resolution = (int(RES_X/X), int(RES_Y/Y)),
+            fps = FRAMERATE,
+            bitrate = BITRATE
+        ),
+        "sx":int(len(frame)*(x/X)),
+        "ex":int(len(frame)*((1+x)/X)),
+        "sy":int(len(frame[0])*(y/Y)),
+        "ey":int(len(frame[0])*((1+y)/Y))
+    } for x in range(X) for y in range(Y)}
 
-screenshare = "--screenshare" in sys.argv
+    while stop_condition():
+        if frame is None:
+            break
+        for m in [mapping[(x, y)] for x in range(X) for y in range(Y)]:
+            final_frame = frame[m["sx"]:m["ex"], m["sy"]:m["ey"]]
+            m["stream"].send(final_frame)
+        frame = frame_gen()
 
-print(f'{x=} {y=}')
-
-n = x*y
-
-if __name__ == "__main__":
-  urls = [f"rtsp://{remote}/frame{i}" for i in range(n)]
-  streams = [Stream(
-    url=url,
-    resolution=(int(res_x/x), int(res_y/y)),
-    fps=30,
-    bitrate="2M"
-  ) for url in urls]
-
-  print("sending to:")
-  for url in urls: print(url)
-  if not screenshare:
-    cap = cv2.VideoCapture(file)
-  else:
-      sct = mss()
-  while True:
-    if not screenshare:
-      ret, frame = cap.read()
-    else:
-        frame = np.array(sct.grab({"top":0, "left":0, "width":res_x, "height":res_y}))
-
-    # do horizontal splits
-    horizontal_frames = np.array_split(frame, y, axis=0)
-    # do vertical splits
-    vertical_frames = [np.array_split(_frame, x, axis=1) for _frame in horizontal_frames]
-    # fix indices
-    fixed_index = min([min([min([len(layer3) for layer3 in layer2]) for layer2 in layer1]) for layer1 in vertical_frames])
-    fixed_frames = np.array([[[layer3[:fixed_index] for layer3 in layer2] for layer2 in layer1] for layer1 in vertical_frames])
-
-    frames = np.concatenate(fixed_frames)
-
-
-    for stream, specific_frame in zip(streams, frames):
-      stream.send(specific_frame)
+if SCREENSHARE:
+    import mss
+    with mss.mss() as sct:
+        capture = lambda: np.array(sct.grab({"top":0, "left":0, "width":RES_X, "height":RES_Y}))
+        main_loop(capture)
+else:
+    import cv2
+    cap = cv2.VideoCapture(SOURCE)
+    capture = lambda: cap.read()[1]
+    main_loop(capture)
