@@ -1,0 +1,31 @@
+name: Build project
+
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install dependencies
+        run: sudo apt install cmake
+      - name: setup gcc
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+      - uses: actions/cache@v4
+        with:
+          path: build
+          key: cmake
+      - uses: actions/checkout@v4.1.1
+        with:
+            submodules: recursive
+      - name: build
+        run: cmake -B build && cmake --build build -j4
+        env:
+            CXX: g++-13
