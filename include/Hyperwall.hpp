@@ -26,7 +26,7 @@ class Hyperwall {
   const int Y;
   std::unordered_map<int, std::unordered_map<int, HyperFrame>> frames;
 public:
-  Hyperwall(FileSource&, int, int, std::unordered_map<std::string, std::string>);
+  Hyperwall(FileSource&, std::unordered_map<std::string, std::string>);
   void run();
 };
 
