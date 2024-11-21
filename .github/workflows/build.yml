@@ -9,10 +9,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: install dependencies
-        run: sudo apt-get update && sudo apt-get -y install cmake g++-13 && which g++-13
+        run: sudo apt-get update && sudo apt-get -y install cmake
       - uses: actions/cache@v4
         with:
           path: build
