@@ -27,6 +27,8 @@ int main(int argc, char* argv[]) {
     .default_value("60");
   parser.add_argument("--file")
     .default_value("file.mp4");
+  parser.add_argument("--clients")
+    .default_value("0.0.0.0");
   parser.add_argument("mode")
     .default_value("file");
 
@@ -42,7 +44,8 @@ int main(int argc, char* argv[]) {
     {"RES_Y", split_res(parser.get<std::string>("--resolution"), "y")},
     {"X", split_res(parser.get<std::string>("--dimensions"), "x")},
     {"Y", split_res(parser.get<std::string>("--dimensions"), "y")},
-    {"FRAMERATE", parser.get<std::string>("--framerate")}
+    {"FRAMERATE", parser.get<std::string>("--framerate")},
+    {"CLIENTS", parser.get<std::string>("--clients")}
   });
   Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
     if(mode == "webcam") {

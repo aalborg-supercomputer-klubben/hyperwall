@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const int x, const int y) {
+const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const std::string CLIENT, const int x, const int y) {
     Hyperwall::FFmpegBuilder builder;
     return builder.add("-re")
       .add("-y")
@@ -17,7 +17,7 @@ const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const i
       .add("-preset", "ultrafast")
       .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
       .add("-r", std::to_string(FRAMERATE))
-      .url(std::format("udp://0.0.0.0:85{}{}", x, y))
+      .url(std::format("udp://{}:85{}{}", CLIENT, x, y))
       .build();
   }
 
@@ -55,16 +55,40 @@ void Hyperwall::HyperFrame::run(const cv::Mat& image) {
   ffmpeg.write(resized_image);
 }
 
+std::vector<std::string> split_string(std::string s, std::string delimiter) {
+  std::vector<std::string> res;
+    int pos = 0;
+    while (pos < s.size()) {
+        pos = s.find(delimiter);
+        res.push_back(s.substr(0, pos));
+        s.erase(0, pos+delimiter.size());
+    }
+    return res;
+}
+
 Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, std::unordered_map<std::string, std::string> settings) : source(source.clone()), X(stoi(settings["X"])), Y(stoi(settings["Y"])) {
+  auto CLIENTS = split_string(settings["CLIENTS"], " ");
+  std::cout << "CLIENTS:";
+  for(auto c: CLIENTS) std::cout << c << " ";
+  std::cout << std::endl;
   for(auto x = 0; x < X; x++) {
     frames.insert({x, {}});
     for(auto y = 0; y < Y; y++) {
+      std::string CLIENT;
+      if(CLIENTS.size() > 1) {
+        CLIENT = CLIENTS[0];
+        CLIENTS.erase(CLIENTS.begin());
+      }
+      else {
+        CLIENT = CLIENTS[0];
+      }
       FFmpeg ffmpeg = default_ffmpeg(
         std::stoi(settings["RES_X"]),
-        std::stoi(settings["RES_Y"]), 
+        std::stoi(settings["RES_Y"]),
         std::stoi(settings["X"]),
         std::stoi(settings["Y"]),
         std::stoi(settings["FRAMERATE"]),
+        CLIENT,
         x,
         y
       );
