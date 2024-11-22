@@ -21,13 +21,13 @@ Hyperwall::FFmpegBuilder& Hyperwall::FFmpegBuilder::url(const std::string url) {
   return *this;
 }
 
-const Hyperwall::FFmpeg Hyperwall::FFmpegBuilder::build() {
+const Hyperwall::FFmpeg Hyperwall::FFmpegBuilder::build(std::string logname) {
   std::stringstream ss;
   ss << "ffmpeg ";
   for(auto option : options) {
     ss << option << " ";
   }
-  ss << ">> ./logs/ffmpeg.stdout 2> ./logs/ffmpeg.stderr";
+  ss << std::format(">> ./logs/stdout-{0} 2> ./logs/stderr-{0}", logname);
   return {ss.str(), _url};
 }
 

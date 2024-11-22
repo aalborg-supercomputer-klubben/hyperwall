@@ -24,6 +24,6 @@ namespace Hyperwall {
     FFmpegBuilder& add(const std::string);
     FFmpegBuilder& add(const std::string, const std::string);
     FFmpegBuilder& url(const std::string);
-    const FFmpeg build();
+    const FFmpeg build(std::string);
   };
 } // Hyperwall
