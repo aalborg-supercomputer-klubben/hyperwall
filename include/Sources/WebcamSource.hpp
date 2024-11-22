@@ -1,15 +1,12 @@
 #pragma once
 
 #include "Sources/VideoSource.hpp"
-#include <opencv2/videoio.hpp>
-
 namespace Hyperwall {
 
-class FileSource : public VideoSourceT {
+class WebcamSource : public VideoSourceT {
   cv::VideoCapture capture;
-
 public:
-  FileSource(std::string);
+  WebcamSource(const int);
   virtual cv::Mat read() override;
   virtual std::unique_ptr<VideoSourceT> clone() const override;
 };

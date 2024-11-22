@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(PROJECT_IMPLEMENTATIONS
     src/FFmpeg.cpp
-    src/FileSource.cpp
+    src/Sources.cpp
     src/Hyperwall.cpp
 )
 

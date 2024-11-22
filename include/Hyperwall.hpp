@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Sources/FileSource.hpp"
 #include "FFmpeg.hpp"
+#include "Sources/VideoSource.hpp"
 #include <unordered_map>
 
 namespace Hyperwall {
@@ -21,12 +21,12 @@ public:
 };
 
 class Hyperwall {
-  FileSource source; //TODO: fix later
+  std::unique_ptr<VideoSourceT> source;
   const int X;
   const int Y;
   std::unordered_map<int, std::unordered_map<int, HyperFrame>> frames;
 public:
-  Hyperwall(FileSource&, std::unordered_map<std::string, std::string>);
+  Hyperwall(VideoSourceT&, std::unordered_map<std::string, std::string>);
   void run();
 };
 

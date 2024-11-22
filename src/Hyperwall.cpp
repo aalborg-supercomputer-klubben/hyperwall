@@ -1,5 +1,4 @@
 #include "Hyperwall.hpp"
-#include "Sources/FileSource.hpp"
 #include "FFmpeg.hpp"
 #include <string>
 #include <unordered_map>
@@ -56,7 +55,7 @@ void Hyperwall::HyperFrame::run(const cv::Mat& image) {
   ffmpeg.write(resized_image);
 }
 
-Hyperwall::Hyperwall::Hyperwall(FileSource& source, std::unordered_map<std::string, std::string> settings) : source(source), X(stoi(settings["X"])), Y(stoi(settings["Y"])) {
+Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, std::unordered_map<std::string, std::string> settings) : source(source.clone()), X(stoi(settings["X"])), Y(stoi(settings["Y"])) {
   for(auto x = 0; x < X; x++) {
     frames.insert({x, {}});
     for(auto y = 0; y < Y; y++) {
@@ -76,7 +75,7 @@ Hyperwall::Hyperwall::Hyperwall(FileSource& source, std::unordered_map<std::stri
 
 void Hyperwall::Hyperwall::run() {
   while(true) {
-    auto image = source.read();
+    auto image = source->read();
     if (image.rows == 0 || image.cols == 0) {
       break;
     }

@@ -8,6 +8,7 @@
 
 #include "Hyperwall.hpp"
 #include "Sources/FileSource.hpp"
+#include "Sources/WebcamSource.hpp"
 
 std::string split_res(std::string res, std::string direction) {
   if (direction == "x") {
@@ -26,6 +27,8 @@ int main(int argc, char* argv[]) {
     .default_value("60");
   parser.add_argument("--file")
     .default_value("file.mp4");
+  parser.add_argument("mode")
+    .default_value("file");
 
   try {
     parser.parse_args(argc, argv);
@@ -41,9 +44,18 @@ int main(int argc, char* argv[]) {
     {"Y", split_res(parser.get<std::string>("--dimensions"), "y")},
     {"FRAMERATE", parser.get<std::string>("--framerate")}
   });
-
-  Hyperwall::FileSource source(parser.get<std::string>("--file"));
-  Hyperwall::Hyperwall hyperwall(source, settings);
+  Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
+    if(mode == "webcam") {
+      Hyperwall::WebcamSource source(0);
+      Hyperwall::Hyperwall hyperwall(source, settings);
+      return hyperwall;
+    }
+    else {
+      Hyperwall::FileSource source(parser.get<std::string>("--file"));
+      Hyperwall::Hyperwall hyperwall(source, settings);
+      return hyperwall;
+    }
+  }(parser.get<std::string>("mode"));
   {
     hyperwall.run();
   }
