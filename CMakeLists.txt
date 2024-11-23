@@ -27,7 +27,7 @@ FetchContent_MakeAvailable(argparse)
 
 add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
 
-target_link_libraries(sender 
+target_link_libraries(sender
     ${OpenCV_LIBS}
     argparse
 )
