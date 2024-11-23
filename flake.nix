@@ -12,6 +12,7 @@
     devShells.${system}.default = pkgs.mkShellNoCC {
       packages = with pkgs; [
         opencv
+        ffmpeg
       ];
     };
   };

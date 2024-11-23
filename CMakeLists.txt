@@ -8,6 +8,7 @@ set(PROJECT_IMPLEMENTATIONS
     src/Sources.cpp
     src/Hyperwall.cpp
 )
+set(CMAKE_CXX_FLAGS "-O3")
 
 # This project
 include_directories(include)
@@ -26,7 +27,7 @@ FetchContent_MakeAvailable(argparse)
 
 add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
 
-target_link_libraries(sender 
+target_link_libraries(sender
     ${OpenCV_LIBS}
     argparse
 )
