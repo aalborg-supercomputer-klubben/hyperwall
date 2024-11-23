@@ -8,7 +8,7 @@ set(PROJECT_IMPLEMENTATIONS
     src/Sources.cpp
     src/Hyperwall.cpp
 )
-set(CMAKE_CXX_FLAGS "-Ofast")
+set(CMAKE_CXX_FLAGS "-O3")
 
 # This project
 include_directories(include)
