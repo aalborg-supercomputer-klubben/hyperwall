@@ -5,8 +5,6 @@
 
 const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const int x, const int y) {
   Hyperwall::FFmpegBuilder builder;
-  //auto HOST = std::vector<std::vector<std::string>>{{"10.42.0.136", "10.42.0.239"}, {"10.42.0.183", "10.42.0.159"}}[y][x];
-  auto HOST = "0.0.0.0";
   return builder.add("-re")
     .add("-y")
     .add("-f", "rawvideo")
@@ -20,7 +18,7 @@ const Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const i
     .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
     .add("-r", std::to_string(FRAMERATE))
     .add("-f", "rtsp")
-    .url(std::format("rtsp://{}:8554/frame/{}/{}", HOST, x, y))
+    .url(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y))
     .build(std::format("ffmpeg-{}-{}.log", x, y));
 }
 
