@@ -2,8 +2,8 @@
 
 ## Dependencies
 ```
-opencv
-ffmpeg
+opencv (build)
+ffmpeg (runtime)
 tmux (optional)
 ```
 
