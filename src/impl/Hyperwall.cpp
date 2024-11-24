@@ -77,10 +77,6 @@ void Hyperwall::Hyperwall::run() {
   std::cout << "Running Hyperwall" << std::endl;
   while(true) {
     auto image = source->read();
-    for(auto i = 0; i < image.cols; i++) 
-      for(auto j = 0; j < image.rows; j++)
-        std::cout << "i:" << i << " j:" << j << " " << image.at<cv::Vec3b>(i, j) << std::endl; // TODO: remove later, is for testing
-    std::cout << "finished" << std::endl;
     if (image.rows == 0 || image.cols == 0) {
       break;
     }

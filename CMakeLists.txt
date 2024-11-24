@@ -7,7 +7,6 @@ set(PROJECT_IMPLEMENTATIONS
     src/impl/FFmpeg.cpp
     src/impl/Sources.cpp
     src/impl/Hyperwall.cpp
-    src/impl/Socket.cpp
 )
 set(CMAKE_CXX_FLAGS "-O3")
 
@@ -27,13 +26,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(argparse)
 
 add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
-add_executable(server src/Server.cpp ${PROJECT_IMPLEMENTATIONS})
 
 target_link_libraries(sender
     ${OpenCV_LIBS}
     argparse
 )
 
-target_link_libraries(server
-    ${OpenCV_LIBS}
-)

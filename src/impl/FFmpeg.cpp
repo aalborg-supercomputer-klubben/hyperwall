@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <format>
 #include <opencv2/core/mat.hpp>
+#include <opencv2/opencv.hpp>
 #include <sstream>
 #include <string>
 
@@ -40,4 +41,10 @@ const void Hyperwall::FFmpeg::write(const cv::Mat& mat) const {
   //std::cout << url << std::endl;
   fwrite(mat.data, 1, mat.cols * mat.rows * 3, buffer);
   fflush(buffer);
+}
+
+const cv::Mat Hyperwall::FFmpeg::read(int rows, int cols) const {
+  cv::Mat mat(cv::Size(rows, cols), CV_64FC1);
+  fread(mat.data, 1, mat.cols * mat.rows * 3, buffer);
+  return mat;
 }

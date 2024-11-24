@@ -1,10 +1,11 @@
+#pragma once
+
 #include "Sources/VideoSource.hpp"
-#include "Socket.hpp"
+#include "FFmpeg.hpp"
 
 namespace Hyperwall {
   class TCPSource : public VideoSourceT {
-    Socket::ServerSocket socket;
-    Socket::Socket client;
+  FFmpeg source;
   public:
     TCPSource();
     virtual cv::Mat read() override;

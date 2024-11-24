@@ -14,6 +14,7 @@ namespace Hyperwall {
 
     FFmpeg(const std::string, const std::string);
     const void write(const cv::Mat&) const;
+    const cv::Mat read(int, int) const;
   };
 
   class FFmpegBuilder {
