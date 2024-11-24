@@ -1,6 +1,7 @@
 venv
 
 *.mp4
+*.webm
 
 .direnv
 .envrc
