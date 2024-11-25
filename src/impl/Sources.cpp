@@ -8,7 +8,6 @@
 #include "Sources/FileSource.hpp"
 #include "Sources/VideoSource.hpp"
 #include "Sources/WebcamSource.hpp"
-#include "Sources/TCPSource.hpp"
 
 Hyperwall::FFmpeg ffmpeg() {
   Hyperwall::FFmpegBuilder builder;
@@ -48,15 +47,3 @@ std::unique_ptr<Hyperwall::VideoSourceT> Hyperwall::WebcamSource::clone() const 
   return std::make_unique<WebcamSource>(*this);
 }
 
-Hyperwall::TCPSource::TCPSource() : source(ffmpeg()) {
-  std::cout << "waiting for initial data..." << std::endl;
-}
-
-cv::Mat Hyperwall::TCPSource::read(){
-  auto frame = source.read(1920, 1080); // TODO: make a better solution
-  return frame;
-}
-
-std::unique_ptr<Hyperwall::VideoSourceT> Hyperwall::TCPSource::clone() const {
-  return std::make_unique<TCPSource>(*this);
-}
