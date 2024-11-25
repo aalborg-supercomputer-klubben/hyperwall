@@ -2,24 +2,11 @@
 #include <opencv2/core/hal/interface.h>
 #include <string>
 #include <opencv2/opencv.hpp>
-#include <sys/socket.h>
 
-#include "FFmpeg.hpp"
 #include "Sources/FileSource.hpp"
 #include "Sources/VideoSource.hpp"
 #include "Sources/WebcamSource.hpp"
 
-Hyperwall::FFmpeg ffmpeg() {
-  Hyperwall::FFmpegBuilder builder;
-  return builder.add("-f mpegts")
-    .add("-i")
-    .url("tcp://127.0.0.1:8600?listen")
-    .add("-f", "rawvideo")
-    .add("-vcodec", "rawvideo")
-    .add("-pix_fmt", "bgr24")
-    .add("pipe:1")
-    .build("input");
-}
 
 Hyperwall::FileSource::FileSource(std::string filename) : capture(filename) {
 }
@@ -46,4 +33,3 @@ cv::Mat Hyperwall::WebcamSource::read() {
 std::unique_ptr<Hyperwall::VideoSourceT> Hyperwall::WebcamSource::clone() const {
   return std::make_unique<WebcamSource>(*this);
 }
-
