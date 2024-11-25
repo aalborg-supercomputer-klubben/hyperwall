@@ -9,6 +9,7 @@
 #include "Hyperwall.hpp"
 #include "Sources/FileSource.hpp"
 #include "Sources/WebcamSource.hpp"
+#include "Sources/TCPSource.hpp"
 
 std::string split_res(std::string res, std::string direction) {
   if (direction == "x") {
@@ -47,6 +48,11 @@ int main(int argc, char* argv[]) {
   Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
     if(mode == "webcam") {
       Hyperwall::WebcamSource source(0);
+      Hyperwall::Hyperwall hyperwall(source, settings);
+      return hyperwall;
+    }
+    else if(mode == "tcp") {
+      Hyperwall::TCPSource source;
       Hyperwall::Hyperwall hyperwall(source, settings);
       return hyperwall;
     }
