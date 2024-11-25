@@ -1,7 +1,7 @@
 #include "FFmpeg.hpp"
 #include <cstdio>
 #include <format>
-#include <opencv2/core/mat.hpp>
+#include <opencv2/opencv.hpp>
 #include <sstream>
 #include <string>
 
@@ -41,3 +41,4 @@ const void Hyperwall::FFmpeg::write(const cv::Mat& mat) const {
   fwrite(mat.data, 1, mat.cols * mat.rows * 3, buffer);
   fflush(buffer);
 }
+
