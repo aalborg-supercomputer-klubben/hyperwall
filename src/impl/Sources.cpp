@@ -1,5 +1,3 @@
-#include <memory>
-#include <opencv2/core/hal/interface.h>
 #include <string>
 #include <opencv2/opencv.hpp>
 
