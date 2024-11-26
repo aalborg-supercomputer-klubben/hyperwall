@@ -2,11 +2,13 @@
 #include <string>
 #include <unordered_map>
 
+#include <spdlog/spdlog.h>
+
 #include "Utils.hpp"
 #include "FFmpeg.hpp"
 #include "Hyperwall.hpp"
 
-Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const int x, const int y) {
+Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const std::string BITRATE, const int x, const int y) {
     Hyperwall::FFmpegBuilder builder;
     spdlog::debug("Creating default ffmpeg instance");
     return builder.add("-re")
@@ -22,6 +24,7 @@ Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, 
         .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
         .add("-r", std::to_string(FRAMERATE))
         .add("-f", "rtsp")
+        .add("-b:v", BITRATE)
         .url(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y))
         .build(std::format("ffmpeg-{}-{}.log", x, y));
 }
@@ -68,10 +71,11 @@ Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, std::unordered_map<std::st
         for(const auto y : Util::range(Y)) {
             FFmpeg ffmpeg = default_ffmpeg(
                 std::stoi(settings["RES_X"]),
-                std::stoi(settings["RES_Y"]), 
+                std::stoi(settings["RES_Y"]),
                 std::stoi(settings["X"]),
                 std::stoi(settings["Y"]),
                 std::stoi(settings["FRAMERATE"]),
+                settings["BITRATE"],
                 x,
                 y
             );
@@ -87,8 +91,8 @@ void Hyperwall::Hyperwall::run() {
         if (image.rows == 0 || image.cols == 0) {
             break;
         }
-        for(auto [x, x_frames] : frames) {
-            for(auto [y, frame] : x_frames) {
+        for(auto& [x, x_frames] : frames) {
+            for(auto& [y, frame] : x_frames) {
               frame.run(image);
             }
         }

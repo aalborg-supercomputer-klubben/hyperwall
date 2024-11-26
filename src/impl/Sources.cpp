@@ -1,7 +1,7 @@
-#include <spdlog/spdlog.h>
 #include <string>
 
 #include <opencv2/opencv.hpp>
+#include <spdlog/spdlog.h>
 
 #include "Sources/FileSource.hpp"
 #include "Sources/VideoSource.hpp"

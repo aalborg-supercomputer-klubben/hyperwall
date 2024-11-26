@@ -5,6 +5,7 @@
 #include <string>
 
 #include <opencv2/opencv.hpp>
+#include <spdlog/spdlog.h>
 
 #include "FFmpeg.hpp"
 

@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
         .default_value("60");
     parser.add_argument("--file")
         .default_value("file.mp4");
+    parser.add_argument("--bitrate")
+        .default_value("1G");
     parser.add_argument("mode")
         .default_value("file");
     parser.add_argument("-v")
@@ -53,14 +55,15 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
     spdlog::set_level(static_cast<spdlog::level::level_enum>(loglevel));
-    spdlog::info("Log level: {}", loglevel);
+    std::cout << "Log level: " << loglevel << std::endl;
     spdlog::debug("Generating settings");
     std::unordered_map<std::string, std::string> settings({
         {"RES_X", split_res(parser.get<std::string>("--resolution"), "x")},
         {"RES_Y", split_res(parser.get<std::string>("--resolution"), "y")},
         {"X", split_res(parser.get<std::string>("--dimensions"), "x")},
         {"Y", split_res(parser.get<std::string>("--dimensions"), "y")},
-        {"FRAMERATE", parser.get<std::string>("--framerate")}
+        {"FRAMERATE", parser.get<std::string>("--framerate")},
+        {"BITRATE", parser.get<std::string>("--bitrate")}
     });
     Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
         spdlog::info("Chosen mode: {}", mode);
