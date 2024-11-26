@@ -25,10 +25,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(argparse)
 
+#spdlog
+find_package(spdlog REQUIRED)
+
 add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
 
 target_link_libraries(sender
     ${OpenCV_LIBS}
     argparse
+    spdlog::spdlog
 )
 

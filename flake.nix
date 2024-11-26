@@ -14,6 +14,7 @@
         opencv
         ffmpeg
         cmake
+        spdlog
       ];
     };
   };
