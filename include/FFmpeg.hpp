@@ -7,23 +7,24 @@
 
 namespace Hyperwall {
 
-  class FFmpeg{
+class FFmpeg{
     FILE* buffer;
-  public:
+public:
     const std::string url;
 
     FFmpeg(const std::string, const std::string);
     const void write(const cv::Mat&) const;
-  };
+    const cv::Mat read(int, int) const;
+};
 
-  class FFmpegBuilder {
+class FFmpegBuilder {
     std::vector<std::string> options;
     std::string _url;
 
-  public:
+public:
     FFmpegBuilder& add(const std::string);
     FFmpegBuilder& add(const std::string, const std::string);
     FFmpegBuilder& url(const std::string);
     const FFmpeg build(std::string);
-  };
+};
 } // Hyperwall
