@@ -8,28 +8,7 @@
 #include "FFmpeg.hpp"
 #include "Hyperwall.hpp"
 
-Hyperwall::FFmpeg default_ffmpeg(const int RES_X, const int RES_Y, const int X, const int Y, const int FRAMERATE, const std::string BITRATE, const int x, const int y) {
-    Hyperwall::FFmpegBuilder builder;
-    spdlog::debug("Creating default ffmpeg instance");
-    return builder.add("-re")
-        .add("-y")
-        .add("-f", "rawvideo")
-        .add("-vcodec", "rawvideo")
-        .add("-pix_fmt", "bgr24")
-        .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
-        .add("-r", std::to_string(FRAMERATE))
-        .add("-i", "-")
-        .add("-f", "mpegts")
-        .add("-preset", "ultrafast")
-        .add("-s", std::format("{}x{}", RES_X/X, RES_Y/Y))
-        .add("-r", std::to_string(FRAMERATE))
-        .add("-f", "rtsp")
-        .add("-b:v", BITRATE)
-        .url(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y))
-        .build(std::format("ffmpeg-{}-{}.log", x, y));
-}
-
-Hyperwall::HyperFrame::HyperFrame(const int x, const int y, std::unordered_map<std::string, std::string> settings, const FFmpeg& ffmpeg) :
+Hyperwall::HyperFrame::HyperFrame(const int x, const int y, std::unordered_map<std::string, std::string> settings, FFmpeg& ffmpeg) :
     x(x),
     y(y),
     X(stoi(settings["X"])),
@@ -37,7 +16,8 @@ Hyperwall::HyperFrame::HyperFrame(const int x, const int y, std::unordered_map<s
     ffmpeg(ffmpeg),
     RES_X(stoi(settings["RES_X"])),
     RES_Y(stoi(settings["RES_Y"])) {
-    spdlog::info("Built HyperFrame: [x: {}, y: {}, uri: {}]", x, y, ffmpeg.url);
+    this->ffmpeg.open();
+    spdlog::info("Built HyperFrame: [x: {}, y: {}, uri: {}]", x, y, ffmpeg.uri());
 }
 
 Hyperwall::HyperFrame::HyperFrame(const HyperFrame& other) :
@@ -69,15 +49,11 @@ Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, std::unordered_map<std::st
     for(const auto x : Util::range(X)) {
         frames.insert({x, {}});
         for(const auto y : Util::range(Y)) {
-            FFmpeg ffmpeg = default_ffmpeg(
-                std::stoi(settings["RES_X"]),
-                std::stoi(settings["RES_Y"]),
-                std::stoi(settings["X"]),
-                std::stoi(settings["Y"]),
+            FFmpeg ffmpeg(
+                {std::stoi(settings["RES_X"])/X, std::stoi(settings["RES_Y"])/Y},
                 std::stoi(settings["FRAMERATE"]),
                 settings["BITRATE"],
-                x,
-                y
+                {x, y}
             );
             frames[x].insert({y, HyperFrame(x, y, settings, ffmpeg)});
         }
