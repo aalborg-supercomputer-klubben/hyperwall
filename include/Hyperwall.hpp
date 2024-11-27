@@ -14,10 +14,10 @@ class HyperFrame {
     const int Y;
     const int RES_X;
     const int RES_Y;
-    const FFmpeg ffmpeg;
+    FFmpeg ffmpeg;
 public:
     HyperFrame(const HyperFrame&);
-    HyperFrame(const int, const int, std::unordered_map<std::string, std::string>, const FFmpeg&);
+    HyperFrame(const int, const int, std::unordered_map<std::string, std::string>, FFmpeg&);
     void run(const cv::Mat&);
 };
 

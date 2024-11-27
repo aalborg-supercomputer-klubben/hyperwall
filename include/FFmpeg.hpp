@@ -1,30 +1,66 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
 #include <opencv2/opencv.hpp>
 
 namespace Hyperwall {
 
-class FFmpeg{
+class FFmpeg {
     FILE* buffer;
 public:
-    const std::string url;
+    const std::tuple<int, int> resolution;
+    const std::tuple<int, int> position;
+    const int framerate;
+    const std::string input;
+    const std::string bitrate;
 
-    FFmpeg(const std::string, const std::string);
+    constexpr FFmpeg(const std::tuple<int, int>& resolution, const int& framerate, const std::string& bitrate, const std::tuple<int, int>& position) :
+        resolution(resolution),
+        framerate(framerate),
+        bitrate(bitrate),
+        position(position) {
+    }
+
+    constexpr FFmpeg(const int framerate, const std::string bitrate, const std::tuple<int, int> position) :
+        resolution(1920, 1080),
+        framerate(framerate),
+        bitrate(bitrate),
+        position(position) {
+
+    }
+
+    constexpr FFmpeg(const std::string bitrate, const std::tuple<int, int> position) :
+        resolution(1920, 1080),
+        framerate(60),
+        bitrate(bitrate),
+        position(position) {
+
+    }
+
+    constexpr FFmpeg(const std::tuple<int, int> position) :
+        resolution(1920, 1080),
+        framerate(60),
+        bitrate("1G"),
+        position(position) {
+
+    }
+    
+    constexpr FFmpeg() :
+        resolution({1920, 1080}),
+        framerate(60),
+        bitrate("1G"),
+        position({0, 0}) {
+    }
+    constexpr ~FFmpeg() = default;
+
+    constexpr std::string uri() const {
+        const auto [x, y] = position;
+        return std::format("rtsp://0.0.0.0:8554/{}/{}", x, y);
+    }
+
+    const void open();
     const void write(const cv::Mat&) const;
-    const cv::Mat read(int, int) const;
 };
 
-class FFmpegBuilder {
-    std::vector<std::string> options;
-    std::string _url;
-
-public:
-    FFmpegBuilder& add(const std::string);
-    FFmpegBuilder& add(const std::string, const std::string);
-    FFmpegBuilder& url(const std::string);
-    const FFmpeg build(std::string);
-};
 } // Hyperwall
