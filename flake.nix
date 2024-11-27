@@ -15,6 +15,8 @@
         ffmpeg
         cmake
         spdlog
+        argparse
+        catch2_3
       ];
     };
   };
