@@ -17,22 +17,33 @@ include_directories(include)
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-# argparse
-include(FetchContent)
-FetchContent_Declare(
-    argparse
-    GIT_REPOSITORY https://github.com/p-ranav/argparse.git
-)
-FetchContent_MakeAvailable(argparse)
 
-#spdlog
+# argparse
+find_package(argparse REQUIRED)
+
+# spdlog
 find_package(spdlog REQUIRED)
+
+# catch2
+find_package(Catch2 REQUIRED)
 
 add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
 
+# Linking
 target_link_libraries(sender
     ${OpenCV_LIBS}
-    argparse
+    argparse::argparse
     spdlog::spdlog
 )
 
+# Tests
+enable_testing()
+foreach(test ffmpeg utils hyperwall)
+add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
+target_link_libraries(test_${test}
+    ${OpenCV_LIBS}
+    spdlog::spdlog
+    Catch2::Catch2WithMain
+)
+add_test(NAME ${test} COMMAND test_${test})
+endforeach()

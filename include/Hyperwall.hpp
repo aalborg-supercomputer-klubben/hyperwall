@@ -1,33 +1,28 @@
 #pragma once
 
-#include <unordered_map>
-
 #include "FFmpeg.hpp"
 #include "Sources/VideoSource.hpp"
+#include "Settings.hpp"
 
 namespace Hyperwall {
 
 class HyperFrame {
-    const int x;
-    const int y;
-    const int X;
-    const int Y;
-    const int RES_X;
-    const int RES_Y;
+    const coordinate position;
+    const coordinate dimensions;
+    const coordinate resolution;
     FFmpeg ffmpeg;
 public:
     HyperFrame(const HyperFrame&);
-    HyperFrame(const int, const int, std::unordered_map<std::string, std::string>, FFmpeg&);
+    HyperFrame(const coordinate&, Settings, FFmpeg&);
     void run(const cv::Mat&);
 };
 
 class Hyperwall {
     std::unique_ptr<VideoSourceT> source;
-    std::unordered_map<int, std::unordered_map<int, HyperFrame>> frames;
-    const int X;
-    const int Y;
+    std::vector<HyperFrame> frames;
+    const coordinate dimensions;
 public:
-    Hyperwall(VideoSourceT&, std::unordered_map<std::string, std::string>);
+    Hyperwall(VideoSourceT&, Settings);
     void run();
 };
 
