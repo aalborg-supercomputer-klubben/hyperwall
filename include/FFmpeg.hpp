@@ -14,6 +14,7 @@ public:
     const coordinate resolution;
     const coordinate position;
     const coordinate dimensions;
+    const std::string rtsp_server;
     const int framerate;
     const std::string input;
     const std::string bitrate;
@@ -22,6 +23,7 @@ public:
     constexpr FFmpeg(Settings settings, coordinate position) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
+        rtsp_server(settings.rtsp_server),
         framerate(settings.framerate),
         bitrate(settings.bitrate),
         position(position) {
@@ -31,6 +33,7 @@ public:
     constexpr FFmpeg(Settings settings) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
+        rtsp_server(settings.rtsp_server),
         framerate(settings.framerate),
         bitrate(settings.bitrate),
         position({0, 0}) {
@@ -39,6 +42,7 @@ public:
     constexpr FFmpeg(coordinate position) :
         resolution(1920, 1080),
         dimensions(2, 2),
+        rtsp_server("0.0.0.0:8554"),
         framerate(60),
         bitrate("1G"),
         position(position) {
@@ -47,6 +51,7 @@ public:
     constexpr FFmpeg() :
         resolution(1920, 1080),
         dimensions(0, 0),
+        rtsp_server("0.0.0.0:8554"),
         framerate(60),
         bitrate("1G"),
         position(0, 0) {

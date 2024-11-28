@@ -33,6 +33,8 @@ int main(int argc, char* argv[]) {
         .default_value("file.mp4");
     parser.add_argument("--bitrate")
         .default_value("1G");
+    parser.add_argument("--rtsp-server")
+        .default_value("0.0.0.0:8554");
     parser.add_argument("mode")
         .default_value("file");
     parser.add_argument("-v")
@@ -67,6 +69,7 @@ int main(int argc, char* argv[]) {
             stoi(split_res(parser.get("--dimensions"), "x")),
             stoi(split_res(parser.get("--dimensions"), "y"))
         },
+        parser.get("--rtsp-server"),
         parser.get("--bitrate"),
         parser.get<int>("--framerate")
     );
@@ -75,6 +78,11 @@ int main(int argc, char* argv[]) {
         spdlog::info("Chosen mode: {}", mode);
         if(mode == "webcam") {
             Hyperwall::WebcamSource source(0);
+            Hyperwall::Hyperwall hyperwall(source, settings);
+            return hyperwall;
+        }
+        else if(mode == "screenshare") {
+            Hyperwall::FileSource source("tcp://0.0.0.0:8600?listen");
             Hyperwall::Hyperwall hyperwall(source, settings);
             return hyperwall;
         }
