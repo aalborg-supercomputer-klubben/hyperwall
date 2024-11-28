@@ -12,3 +12,12 @@ TEST_CASE("test utility functions: range") {
     }
     REQUIRE(r1 == r2);
 }
+
+TEST_CASE("test utility functions: range constexpr") {
+    if constexpr (Util::range(10) == Util::range(10)) {
+        REQUIRE(true);
+    }
+    else {
+        REQUIRE(false);
+    }
+}
