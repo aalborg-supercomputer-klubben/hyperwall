@@ -29,5 +29,5 @@ ffmpeg -f x11grab -i :0 -vcodec libx264 -f mpegts tcp://127.0.0.1:8600
 ```
 then in another shell, start the hyperwall:
 ```sh
-./build/sender --file "tcp://127.0.0.1:8600?listen" ... <args>
+./build/sender screenshare <args>
 ```

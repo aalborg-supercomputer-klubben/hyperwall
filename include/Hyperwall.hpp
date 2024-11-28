@@ -13,7 +13,7 @@ class HyperFrame {
     FFmpeg ffmpeg;
 public:
     HyperFrame(const HyperFrame&);
-    HyperFrame(const coordinate&, Settings, FFmpeg&);
+    HyperFrame(const coordinate&, Settings&, FFmpeg&);
     void run(const cv::Mat&);
 };
 
@@ -22,7 +22,7 @@ class Hyperwall {
     std::vector<HyperFrame> frames;
     const coordinate dimensions;
 public:
-    Hyperwall(VideoSourceT&, Settings);
+    Hyperwall(VideoSourceT&, Settings&);
     void run();
 };
 

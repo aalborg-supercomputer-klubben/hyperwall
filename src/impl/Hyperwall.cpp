@@ -6,7 +6,7 @@
 #include "FFmpeg.hpp"
 #include "Hyperwall.hpp"
 
-Hyperwall::HyperFrame::HyperFrame(const coordinate& position, Settings settings, FFmpeg& ffmpeg) :
+Hyperwall::HyperFrame::HyperFrame(const coordinate& position, Settings& settings, FFmpeg& ffmpeg) :
     position(position),
     dimensions(settings.dimensions),
     ffmpeg(ffmpeg),
@@ -42,7 +42,7 @@ void Hyperwall::HyperFrame::run(const cv::Mat& image) {
     ffmpeg.write(resized_image);
 }
 
-Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, Settings settings) :
+Hyperwall::Hyperwall::Hyperwall(VideoSourceT& source, Settings& settings) :
     source(source.clone()),
     dimensions(settings.dimensions) {
     spdlog::info("Generating hyperwall...");
