@@ -8,12 +8,13 @@
 const void Hyperwall::FFmpeg::open() {
     const auto [res_x, res_y] = resolution;
     const auto [x, y] = position;
+    const auto [X, Y] = dimensions;
     std::stringstream ss;
     ss << "ffmpeg -re -y -f rawvideo -vcodec rawvideo -pix_fmt bgr24 -s "
-        << res_x << "x" << res_y
+        << res_x/X << "x" << res_y/Y
         << " -r " << framerate
         << " -i - -f mpegts -preset ultrafast -s "
-        << res_x << "x" << res_y
+        << res_x/X << "x" << res_y/Y
         << " -r " << framerate
         << " -f rtsp -b:v "
         << bitrate

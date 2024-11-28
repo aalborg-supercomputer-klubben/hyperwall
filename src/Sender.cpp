@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <spdlog/common.h>
 #include <string>
-#include <unordered_map>
 
 #include <argparse/argparse.hpp>
 #include <opencv2/opencv.hpp>
@@ -28,7 +27,7 @@ int main(int argc, char* argv[]) {
     parser.add_argument("--resolution")
         .default_value("1920x1080");
     parser.add_argument("--framerate")
-        .default_value("60");
+        .default_value(60);
     parser.add_argument("--file")
         .default_value("file.mp4");
     parser.add_argument("--bitrate")
@@ -57,14 +56,20 @@ int main(int argc, char* argv[]) {
     spdlog::set_level(static_cast<spdlog::level::level_enum>(loglevel));
     std::cout << "Log level: " << loglevel << std::endl;
     spdlog::debug("Generating settings");
-    std::unordered_map<std::string, std::string> settings({
-        {"RES_X", split_res(parser.get<std::string>("--resolution"), "x")},
-        {"RES_Y", split_res(parser.get<std::string>("--resolution"), "y")},
-        {"X", split_res(parser.get<std::string>("--dimensions"), "x")},
-        {"Y", split_res(parser.get<std::string>("--dimensions"), "y")},
-        {"FRAMERATE", parser.get<std::string>("--framerate")},
-        {"BITRATE", parser.get<std::string>("--bitrate")}
-    });
+
+    Hyperwall::Settings settings(
+        {
+            stoi(split_res(parser.get("--resolution"), "x")),
+            stoi(split_res(parser.get("--resolution"), "y"))
+        },
+        {
+            stoi(split_res(parser.get("--dimensions"), "x")),
+            stoi(split_res(parser.get("--dimensions"), "y"))
+        },
+        parser.get("--bitrate"),
+        parser.get<int>("--framerate")
+    );
+
     Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
         spdlog::info("Chosen mode: {}", mode);
         if(mode == "webcam") {

@@ -38,12 +38,12 @@ target_link_libraries(sender
 
 # Tests
 enable_testing()
-foreach(test ffmpeg utils)
-    add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
-    target_link_libraries(test_${test}
-        ${OpenCV_LIBS}
-        spdlog::spdlog
-        Catch2::Catch2WithMain
-    )
-    add_test(NAME ${test} COMMAND test_${test})
+foreach(test ffmpeg utils hyperwall)
+add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
+target_link_libraries(test_${test}
+    ${OpenCV_LIBS}
+    spdlog::spdlog
+    Catch2::Catch2WithMain
+)
+add_test(NAME ${test} COMMAND test_${test})
 endforeach()

@@ -4,11 +4,11 @@
 
 TEST_CASE("test ffmpeg constructors") {
     std::vector<Hyperwall::FFmpeg> ffmpegs({
-        {},
-        {{2, 2}},
-        {"1G", {2, 2}},
-        {60, "1G", {2, 2}},
-        {{1920,1080}, 60, "1G", {2, 2}}
+        {{{1920, 1080}, {2, 2}, "1G", 60}},
+        {{{1920, 1080}, {2, 2}, "1G"}},
+        {{{1920, 1080}, {2, 2}}},
+        {{{1920, 1080}}},
+        {}
     });
     for(auto i = 0; i < ffmpegs.size()-1; i++) {
         auto [rx1, ry1] = ffmpegs[i].resolution;
