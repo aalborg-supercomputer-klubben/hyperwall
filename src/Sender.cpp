@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
     parser.add_argument("--resolution")
         .default_value("1920x1080");
     parser.add_argument("--framerate")
+        .scan<'i', int>()
         .default_value(60);
     parser.add_argument("--file")
         .default_value("file.mp4");
