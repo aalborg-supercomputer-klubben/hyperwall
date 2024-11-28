@@ -38,7 +38,7 @@ target_link_libraries(sender
 
 # Tests
 enable_testing()
-foreach(test ffmpeg utils hyperwall)
+foreach(test ffmpeg utils hyperwall settings)
 add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
 target_link_libraries(test_${test}
     ${OpenCV_LIBS}
