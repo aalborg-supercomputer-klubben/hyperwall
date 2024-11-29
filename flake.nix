@@ -10,8 +10,10 @@
     pkgs = import nixpkgs { inherit system; };
   in {
     devShells.${system}.default = pkgs.mkShellNoCC {
-      packages = with pkgs; [
-        opencv
+      packages = let
+          opencvGtk = pkgs.opencv.override (old : { enableGtk2 = true; });
+      in with pkgs; [
+        opencvGtk
         ffmpeg
         cmake
         spdlog
