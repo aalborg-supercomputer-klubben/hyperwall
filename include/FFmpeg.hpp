@@ -60,7 +60,7 @@ public:
 
     constexpr std::string uri() const {
         const auto [x, y] = position;
-        return std::format("rtsp://0.0.0.0:8554/{}/{}", x, y);
+        return std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y);
     }
 
     const void open();

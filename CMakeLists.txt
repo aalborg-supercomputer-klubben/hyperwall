@@ -27,14 +27,16 @@ find_package(spdlog REQUIRED)
 # catch2
 find_package(Catch2 REQUIRED)
 
-add_executable(sender src/Sender.cpp ${PROJECT_IMPLEMENTATIONS})
+foreach(exe Sender Receiver)
+add_executable(${exe} src/${exe}.cpp ${PROJECT_IMPLEMENTATIONS})
 
 # Linking
-target_link_libraries(sender
+target_link_libraries(${exe}
     ${OpenCV_LIBS}
     argparse::argparse
     spdlog::spdlog
 )
+endforeach()
 
 # Tests
 enable_testing()
