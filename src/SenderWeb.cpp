@@ -1,6 +1,12 @@
+#include <opencv2/videoio.hpp>
 #include <spdlog/spdlog.h>
 
+#include "Hyperwall.hpp"
+#include "Sources/FileSource.hpp"
 #include "Web/Server.hpp"
+
+std::thread thread;
+bool running = false;
 
 int main(int argc, char* argv[]) {
     Web::Server server;
@@ -19,16 +25,16 @@ int main(int argc, char* argv[]) {
                 Available on <a href="https://github.com/aalborg-supercomputer-klubben/hyperwall">Github</a>
 
                 <hr>
-                <form id="videoUploadForm" method="POST" enctype="multipart/form-data" action="/upload">
+                <form id="videoUploadForm" method="POST" enctype="multipart/form-data" action="/run">
                     <label for="videoFile">Choose a video file:</label>
                     <input type="file" id="videoFile" name="videoFile" accept="video/*" required>
                     <br><br>
-                    <button type="submit">Upload</button>
+                    <button type="submit">Run</button>
                 </form>
             </body>
         </html>
     )");
-    server.Post("/upload", [](httplib::Request request, httplib::Response& response){
+    server.Post("/run", [](httplib::Request request, httplib::Response& response){
         if(!request.has_file("videoFile")) {
             response.status = 400;
             response.set_content("No file uploaded.", "text/plain");
@@ -37,6 +43,19 @@ int main(int argc, char* argv[]) {
         const auto& file = request.get_file_value("videoFile");
         spdlog::info("Got file: {}", file.filename);
         
+        if (running) {
+            response.status = 400;
+            response.set_content("Failed, hyperwall is already running", "text/plain");
+            return;
+        }
+        Hyperwall::FileSource source(file.content);
+        Hyperwall::Settings settings;
+        Hyperwall::Hyperwall hyperwall(source, settings);
+        std::thread thread([&hyperwall](){
+            running = true;
+            hyperwall.run();
+            running = false;
+        });
 
         response.set_content(R"(
             <!DOCTYPE html>
