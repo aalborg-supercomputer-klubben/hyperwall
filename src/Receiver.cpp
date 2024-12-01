@@ -18,6 +18,14 @@ std::string split_res(std::string res, std::string direction) {
     return res.substr(res.find("x")+1, res.size());
 }
 
+cv::VideoCapture await_capture(std::string path) {
+    while(true) {
+        cv::VideoCapture capture(path);
+        if (capture.isOpened())
+            return capture;
+    }
+}
+
 int main(int argc, char* argv[]) {
     argparse::ArgumentParser parser;
 
@@ -38,7 +46,7 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
     if(!parser.get<bool>("--test")) {
-        cv::VideoCapture capture(
+        cv::VideoCapture capture = await_capture(
             std::format("rtsp://0.0.0.0:8554/frame/{}/{}",
             split_res(parser.get("coordinate"), "x"),
             split_res(parser.get("coordinate"), "y")));
@@ -61,7 +69,7 @@ int main(int argc, char* argv[]) {
             for(const auto& y : Util::range(stoi(split_res(parser.get("coordinate"), "y")))) {
                 threads.push_back(std::thread{[x, y](){
                     spdlog::info("Running thread: {} {}", x, y);
-                    auto capture = cv::VideoCapture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
+                    auto capture = await_capture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
                     while(true) {
                         cv::Mat frame;
                         capture.read(frame);

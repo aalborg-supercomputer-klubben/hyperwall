@@ -27,7 +27,11 @@ find_package(spdlog REQUIRED)
 # catch2
 find_package(Catch2 REQUIRED)
 
-foreach(exe Sender Receiver)
+# httplib
+find_package(httplib REQUIRED)
+
+# init all executables
+foreach(exe Sender Receiver SenderWeb)
 add_executable(${exe} src/${exe}.cpp ${PROJECT_IMPLEMENTATIONS})
 
 # Linking
@@ -35,6 +39,7 @@ target_link_libraries(${exe}
     ${OpenCV_LIBS}
     argparse::argparse
     spdlog::spdlog
+    httplib::httplib
 )
 endforeach()
 
