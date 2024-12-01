@@ -11,13 +11,6 @@
 
 #include "Utils.hpp"
 
-std::string split_res(std::string res, std::string direction) {
-    if (direction == "x") {
-        return res.substr(0, res.find("x"));
-    }
-    return res.substr(res.find("x")+1, res.size());
-}
-
 cv::VideoCapture await_capture(std::string path) {
     while(true) {
         cv::VideoCapture capture(path);
@@ -46,10 +39,8 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
     if(!parser.get<bool>("--test")) {
-        cv::VideoCapture capture = await_capture(
-            std::format("rtsp://0.0.0.0:8554/frame/{}/{}",
-            split_res(parser.get("coordinate"), "x"),
-            split_res(parser.get("coordinate"), "y")));
+        const auto [x, y] = Util::split_resolution(parser.get("coordinate"));
+        cv::VideoCapture capture = await_capture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
         while(true)  {
             cv::Mat frame;
             capture.read(frame);
@@ -65,8 +56,10 @@ int main(int argc, char* argv[]) {
     else {
         // not particularly good
         std::vector<std::thread> threads;
-        for(const auto& x : Util::range(stoi(split_res(parser.get("coordinate"), "x")))) {
-            for(const auto& y : Util::range(stoi(split_res(parser.get("coordinate"), "y")))) {
+        const auto [X, Y] = Util::split_resolution(parser.get("coordinate"));
+        for(const auto& x : Util::range(X)) {
+
+            for(const auto& y : Util::range(Y)) {
                 threads.push_back(std::thread{[x, y](){
                     spdlog::info("Running thread: {} {}", x, y);
                     auto capture = await_capture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
