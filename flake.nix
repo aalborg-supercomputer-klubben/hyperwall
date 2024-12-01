@@ -19,6 +19,7 @@
                     spdlog
                     argparse
                     catch2_3
+                    httplib
                 ];
             };
         }) {

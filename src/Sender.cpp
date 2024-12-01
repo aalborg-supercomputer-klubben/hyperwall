@@ -10,13 +10,7 @@
 #include "Hyperwall.hpp"
 #include "Sources/FileSource.hpp"
 #include "Sources/WebcamSource.hpp"
-
-std::string split_res(std::string res, std::string direction) {
-    if (direction == "x") {
-        return res.substr(0, res.find("x"));
-    }
-    return res.substr(res.find("x")+1, res.size());
-}
+#include "Utils.hpp"
 
 int main(int argc, char* argv[]) {
     auto loglevel = (int)spdlog::level::info;
@@ -61,14 +55,8 @@ int main(int argc, char* argv[]) {
     spdlog::debug("Generating settings");
 
     Hyperwall::Settings settings(
-        {
-            stoi(split_res(parser.get("--resolution"), "x")),
-            stoi(split_res(parser.get("--resolution"), "y"))
-        },
-        {
-            stoi(split_res(parser.get("--dimensions"), "x")),
-            stoi(split_res(parser.get("--dimensions"), "y"))
-        },
+        Util::split_resolution(parser.get("--resolution")),
+        Util::split_resolution(parser.get("--dimensions")),
         parser.get("--rtsp-server"),
         parser.get("--bitrate"),
         parser.get<int>("--framerate")

@@ -1,4 +1,6 @@
+#pragma once
 
+#include <string>
 #include <vector>
 
 namespace Util {
@@ -18,5 +20,13 @@ constexpr std::vector<T> range(const int start, const int end) {
         values.push_back(i);
     return values;
 }
+
+constexpr std::tuple<int, int> split_resolution(const std::string res) {
+    return {
+        std::stoi(res.substr(0, res.find("x"))),
+        std::stoi(res.substr(res.find("x")+1, res.size()))
+    };
+}
+
 
 }
