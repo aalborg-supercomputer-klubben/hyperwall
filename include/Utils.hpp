@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -28,5 +29,28 @@ constexpr std::tuple<int, int> split_resolution(const std::string res) {
     };
 }
 
+class conststring {
+    const char* content;
+    std::size_t _size;
+public:
+    template<int N>
+    constexpr conststring(const char (&a)[N]) : content(a), _size(N-1) {
+    }
+
+    constexpr char operator[](std::size_t n) const
+    {
+        return _size;
+    }
+
+    const char* c_str() const {
+        return content;
+    }
+
+    friend constexpr bool operator==(const conststring lhs, const conststring rhs) {
+        return lhs.content == rhs.content;
+    }
+ 
+    constexpr std::size_t size() const { return _size; }
+};
 
 }

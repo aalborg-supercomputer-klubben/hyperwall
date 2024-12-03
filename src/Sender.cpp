@@ -57,8 +57,8 @@ int main(int argc, char* argv[]) {
     Hyperwall::Settings settings(
         Util::split_resolution(parser.get("--resolution")),
         Util::split_resolution(parser.get("--dimensions")),
-        parser.get("--rtsp-server"),
-        parser.get("--bitrate"),
+        parser.get<Util::conststring>("--rtsp-server"),
+        parser.get<Util::conststring>("--bitrate"),
         parser.get<int>("--framerate")
     );
 

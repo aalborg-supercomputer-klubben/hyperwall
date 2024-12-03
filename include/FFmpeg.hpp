@@ -14,10 +14,9 @@ public:
     const coordinate resolution;
     const coordinate position;
     const coordinate dimensions;
-    const std::string rtsp_server;
+    const conststring rtsp_server;
     const int framerate;
-    const std::string input;
-    const std::string bitrate;
+    const conststring bitrate;
 
 
     constexpr FFmpeg(Settings settings, coordinate position) :

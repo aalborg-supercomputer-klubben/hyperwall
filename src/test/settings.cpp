@@ -3,7 +3,7 @@
 #include "Settings.hpp"
 
 TEST_CASE("Test settings constexpr") {
-    if constexpr (Hyperwall::Settings().framerate) {
+    if constexpr (Hyperwall::Settings() == Hyperwall::Settings()) {
         REQUIRE(true);
     }
     else {

@@ -17,8 +17,8 @@ const void Hyperwall::FFmpeg::open() {
         << res_x/X << "x" << res_y/Y
         << " -r " << framerate
         << " -f rtsp -b:v "
-        << bitrate
-        << " rtsp://" << rtsp_server << "/frame/" << x << "/" << y <<
+        << bitrate.c_str()
+        << " rtsp://" << rtsp_server.c_str() << "/frame/" << x << "/" << y <<
         " 2> ./logs/stderr-" << x << "-" << y << ".log"
         << " > ./logs/stdout-" << x << "-" << y << ".log";
 
