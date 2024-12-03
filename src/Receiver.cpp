@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
         for(const auto& x : Util::range(X)) {
 
             for(const auto& y : Util::range(Y)) {
-                threads.push_back(std::thread{[x, y](){
+                threads.push_back(std::thread{[x, y, &parser](){
                     spdlog::info("Running thread: {} {}", x, y);
-                    auto capture = await_capture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
+                    auto capture = await_capture(std::format("rtsp://{}:8554/frame/{}/{}", parser.get<std::string>("--address"), x, y));
                     while(true) {
                         cv::Mat frame;
                         capture.read(frame);
