@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     }
     if(!parser.get<bool>("--test")) {
         const auto [x, y] = Util::split_resolution(parser.get("coordinate"));
-        cv::VideoCapture capture = await_capture(std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y));
+        cv::VideoCapture capture = await_capture(std::format("rtsp://{}:8554/frame/{}/{}", parser.get("--address"), x, y));
         while(true)  {
             cv::Mat frame;
             capture.read(frame);
