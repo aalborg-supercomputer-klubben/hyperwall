@@ -2,7 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "ModeExecutor.hpp"
+#include "SourceExecutor.hpp"
 #include "Hyperwall.hpp"
 #include "Settings.hpp"
 #include "Sources/WebcamSource.hpp"
