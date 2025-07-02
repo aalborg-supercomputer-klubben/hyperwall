@@ -12,14 +12,16 @@
 #include "Sources/WebcamSource.hpp"
 #include "Utils.hpp"
 
+using namespace asck;
+
 int main(int argc, char* argv[]) {
     auto loglevel = (int)spdlog::level::info;
 
     argparse::ArgumentParser parser;
-    parser.add_argument("--dimensions")
-        .default_value("2x2");
     parser.add_argument("--resolution")
         .default_value("1920x1080");
+    parser.add_argument("--dimensions")
+        .default_value("2x2");
     parser.add_argument("--framerate")
         .scan<'i', int>()
         .default_value(60);
@@ -54,24 +56,24 @@ int main(int argc, char* argv[]) {
     std::cout << "Log level: " << loglevel << std::endl;
     spdlog::debug("Generating settings");
 
-    Hyperwall::Settings settings(
-        Util::split_resolution(parser.get("--resolution")),
-        Util::split_resolution(parser.get("--dimensions")),
+    Settings settings(
+        splitResolution(parser.get("--resolution")),
+        splitResolution(parser.get("--dimensions")),
         parser.get("--rtsp-server"),
         parser.get("--bitrate"),
         parser.get<int>("--framerate")
     );
 
-    Hyperwall::Hyperwall hyperwall = [&settings, &parser](std::string mode) {
+    auto hyperwall = [&settings, &parser](std::string mode) {
         spdlog::info("Chosen mode: {}", mode);
         if(mode == "webcam") {
-            Hyperwall::WebcamSource source(0);
-            Hyperwall::Hyperwall hyperwall(source, settings);
+            WebcamSource source(0);
+            Hyperwall hyperwall(source, settings);
             return hyperwall;
         }
         else if(mode == "screenshare") {
-            Hyperwall::FileSource source("tcp://0.0.0.0:8600?listen");
-            Hyperwall::Hyperwall hyperwall(source, settings);
+            FileSource source("tcp://0.0.0.0:8600?listen");
+            Hyperwall hyperwall(source, settings);
             return hyperwall;
         }
         else {
@@ -80,8 +82,8 @@ int main(int argc, char* argv[]) {
                 spdlog::error("File: {} does not exist!", filename);
                 exit(EXIT_FAILURE);
             }
-            Hyperwall::FileSource source(filename);
-            Hyperwall::Hyperwall hyperwall(source, settings);
+            FileSource source(filename);
+            Hyperwall hyperwall(source, settings);
             return hyperwall;
         }
     }(parser.get<std::string>("mode"));

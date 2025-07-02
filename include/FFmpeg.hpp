@@ -6,7 +6,7 @@
 
 #include "Settings.hpp"
 
-namespace Hyperwall {
+namespace asck {
 
 class FFmpeg {
     FILE* buffer;
@@ -37,6 +37,7 @@ public:
         framerate(settings.framerate),
         bitrate(settings.bitrate),
         position({0, 0}) {
+
     }
 
     constexpr FFmpeg(coordinate position) :

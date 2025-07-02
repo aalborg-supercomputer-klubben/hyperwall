@@ -3,7 +3,7 @@
 #include <tuple>
 #include <string>
 
-namespace Hyperwall {
+namespace asck {
 
 typedef std::tuple<int, int> coordinate;
 
@@ -39,6 +39,7 @@ public:
         framerate(60) {
     }
 
+
     constexpr Settings(const coordinate& resolution, const coordinate& dimensions) :
         resolution(resolution),
         dimensions(dimensions),
@@ -46,7 +47,7 @@ public:
         bitrate("1G"),
         framerate(60) {
     }
-    
+
     constexpr Settings(const coordinate& resolution) :
         resolution(resolution),
         dimensions({2, 2}),

@@ -8,6 +8,8 @@
 #include "Utils.hpp"
 #include "Web/Server.hpp"
 
+using namespace asck;
+
 std::vector<std::thread> threads;
 bool running;
 
@@ -91,7 +93,7 @@ int main(int argc, char* argv[]) {
         std::tuple<int, int> dimensions, resolution;
         if(request.has_file("dimensions") && request.get_file_value("dimensions").content.contains("x")) {
             auto dim = request.get_file_value("dimensions");
-            dimensions = Util::split_resolution(dim.content);
+            dimensions = splitResolution(dim.content);
         }
         else {
             spdlog::warn("No dim provided");
@@ -99,7 +101,7 @@ int main(int argc, char* argv[]) {
         }
         if (request.has_file("resolution") && request.get_file_value("resolution").content.contains("x")) {
             auto res = request.get_file_value("resolution");
-            resolution = Util::split_resolution(res.content);
+            resolution = splitResolution(res.content);
         }
         else {
             spdlog::warn("No res provided");
@@ -126,12 +128,11 @@ int main(int argc, char* argv[]) {
 
         threads.push_back(std::thread{[&filename, dimensions, resolution](){
             running = true;
-            Hyperwall::FileSource source(filename);
-            Hyperwall::Settings settings(
-                resolution,
-                dimensions
+            FileSource source(filename);
+            Settings settings(
+                resolution
             );
-            Hyperwall::Hyperwall hyperwall(source, settings);
+            Hyperwall hyperwall(source, settings);
             hyperwall.run();
             std::filesystem::remove(filename);
             running = false;

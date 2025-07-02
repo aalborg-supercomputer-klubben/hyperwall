@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 
-namespace Hyperwall {
+namespace asck {
 
 class VideoSourceT {
 public:

@@ -2,7 +2,7 @@
 
 #include "Sources/VideoSource.hpp"
 
-namespace Hyperwall {
+namespace asck {
 
 class WebcamSource : public VideoSourceT {
     cv::VideoCapture capture;

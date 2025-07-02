@@ -2,8 +2,10 @@
 
 #include "Settings.hpp"
 
+using namespace asck;
+
 TEST_CASE("Test settings constexpr") {
-    if constexpr (Hyperwall::Settings().framerate) {
+    if constexpr (Settings().framerate) {
         REQUIRE(true);
     }
     else {

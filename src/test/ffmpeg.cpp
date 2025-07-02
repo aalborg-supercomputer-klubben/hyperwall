@@ -2,8 +2,10 @@
 
 #include "FFmpeg.hpp"
 
+using namespace asck;
+
 TEST_CASE("test ffmpeg constructors") {
-    std::vector<Hyperwall::FFmpeg> ffmpegs({
+    std::vector<FFmpeg> ffmpegs({
         {{{1920, 1080}, {2, 2}, "0.0.0.0:8554", "1G", 60}},
         {{{1920, 1080}, {2, 2}, "0.0.0.0:8554", "1G"}},
         {{{1920, 1080}, {2, 2}, "0.0.0.0:8554"}},
@@ -26,7 +28,7 @@ TEST_CASE("test ffmpeg constructors") {
 }
 
 TEST_CASE("test ffmpeg constexpr") {
-    if constexpr (Hyperwall::FFmpeg().framerate) {
+    if constexpr (FFmpeg().framerate) {
         REQUIRE(true);
     }
     else {
