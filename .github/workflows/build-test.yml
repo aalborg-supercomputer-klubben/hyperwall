@@ -16,9 +16,9 @@ jobs:
       - name: Add fake cpp-httplib CMake config
         run: |
           sudo mkdir -p /usr/local/lib/cmake/cpp-httplib
-          cat <<EOF | sudo tee /usr/local/lib/cmake/cpp-httplib/cpp-httplibConfig.cmake
-          add_library(cpp-httplib::cpp-httplib INTERFACE IMPORTED)
-          set_target_properties(cpp-httplib::cpp-httplib PROPERTIES
+          cat <<EOF | sudo tee /usr/local/lib/cmake/httplib/httplibConfig.cmake
+          add_library(httplib::httplib INTERFACE IMPORTED)
+          set_target_properties(httplib::httplib PROPERTIES
               INTERFACE_INCLUDE_DIRECTORIES "/usr/include"
           )
           EOF
