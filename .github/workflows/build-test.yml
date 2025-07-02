@@ -15,7 +15,7 @@ jobs:
         run: sudo apt-get -y install cmake libopencv-dev libspdlog-dev libargparse-dev libcpp-httplib-dev libcpp-httplib-dev
       - name: Add fake cpp-httplib CMake config
         run: |
-          mkdir -p /usr/local/lib/cmake/cpp-httplib
+          sudo mkdir -p /usr/local/lib/cmake/cpp-httplib
           cat <<EOF | sudo tee /usr/local/lib/cmake/cpp-httplib/cpp-httplibConfig.cmake
           add_library(cpp-httplib::cpp-httplib INTERFACE IMPORTED)
           set_target_properties(cpp-httplib::cpp-httplib PROPERTIES
