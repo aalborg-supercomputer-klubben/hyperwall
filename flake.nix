@@ -20,6 +20,8 @@
                     argparse
                     catch2_3
                     httplib
+                    gcc
+                    openssl
                 ];
             };
         }) {
