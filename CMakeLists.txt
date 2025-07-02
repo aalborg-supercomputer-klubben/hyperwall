@@ -28,29 +28,39 @@ find_package(spdlog REQUIRED)
 find_package(Catch2 REQUIRED)
 
 # httplib
-find_package(httplib REQUIRED)
+find_package(httplib QUIET)
 
 # init all executables
-foreach(exe Sender Receiver SenderWeb)
-add_executable(${exe} src/${exe}.cpp ${PROJECT_IMPLEMENTATIONS})
-
-# Linking
-target_link_libraries(${exe}
-    ${OpenCV_LIBS}
-    argparse::argparse
-    spdlog::spdlog
-    httplib::httplib
-)
+foreach(exe Sender Receiver)
+    add_executable(${exe} src/${exe}.cpp ${PROJECT_IMPLEMENTATIONS})
+    
+    # Linking
+    target_link_libraries(${exe}
+        ${OpenCV_LIBS}
+        argparse::argparse
+        spdlog::spdlog
+    )
 endforeach()
+
+# optionally compile the UI
+if (httplib_FOUND)
+    add_executable(SenderWeb src/SenderWeb.cpp ${PROJECT_IMPLEMENTATIONS})
+    target_link_libraries(SenderWeb
+        ${OpenCV_LIBS}
+        argparse::argparse
+        spdlog::spdlog
+        httplib::httplib
+    )
+endif()
 
 # Tests
 enable_testing()
 foreach(test ffmpeg utils hyperwall settings)
-add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
-target_link_libraries(test_${test}
-    ${OpenCV_LIBS}
-    spdlog::spdlog
-    Catch2::Catch2WithMain
-)
-add_test(NAME ${test} COMMAND test_${test})
+    add_executable(test_${test} src/test/${test}.cpp ${PROJECT_IMPLEMENTATIONS})
+    target_link_libraries(test_${test}
+        ${OpenCV_LIBS}
+        spdlog::spdlog
+        Catch2::Catch2WithMain
+    )
+    add_test(NAME ${test} COMMAND test_${test})
 endforeach()

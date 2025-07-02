@@ -12,16 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: install dependencies
-        run: sudo apt-get -y install cmake libopencv-dev libspdlog-dev libargparse-dev libcpp-httplib-dev libcpp-httplib-dev
-      - name: Add fake cpp-httplib CMake config
-        run: |
-          sudo mkdir -p /usr/local/lib/cmake/cpp-httplib
-          cat <<EOF | sudo tee /usr/local/lib/cmake/httplib/httplibConfig.cmake
-          add_library(httplib::httplib INTERFACE IMPORTED)
-          set_target_properties(httplib::httplib PROPERTIES
-              INTERFACE_INCLUDE_DIRECTORIES "/usr/include"
-          )
-          EOF
+        run: sudo apt-get -y install cmake libopencv-dev libspdlog-dev libargparse-dev
       - uses: actions/cache@v4
         with:
           path: build
