@@ -26,12 +26,3 @@ TEST_CASE("test ffmpeg constructors") {
         REQUIRE(y1 == y2);
     }
 }
-
-TEST_CASE("test ffmpeg constexpr") {
-    if constexpr (FFmpeg().framerate) {
-        REQUIRE(true);
-    }
-    else {
-        REQUIRE(false);
-    }
-}

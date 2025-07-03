@@ -5,7 +5,8 @@
 using namespace asck;
 
 TEST_CASE("Test settings constexpr") {
-    if constexpr (Settings().framerate) {
+    static constexpr Settings settings;
+    if constexpr (settings.framerate) {
         REQUIRE(true);
     }
     else {

@@ -4,9 +4,8 @@
 #include <vector>
 #include <cmath>
 
-#include "Settings.hpp"
-
 namespace asck {
+typedef std::tuple<int, int> coordinate;
 
 template<typename T = int>
 constexpr std::vector<T> range(const int n) {

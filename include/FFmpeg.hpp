@@ -20,7 +20,7 @@ public:
     const std::string bitrate;
 
 
-    constexpr FFmpeg(Settings settings, coordinate position) :
+    FFmpeg(Settings settings, coordinate position) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
         rtsp_server(settings.rtsp_server),
@@ -30,7 +30,7 @@ public:
 
     }
 
-    constexpr FFmpeg(Settings settings) :
+    FFmpeg(Settings settings) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
         rtsp_server(settings.rtsp_server),
@@ -40,7 +40,7 @@ public:
 
     }
 
-    constexpr FFmpeg(coordinate position) :
+    FFmpeg(coordinate position) :
         resolution(1920, 1080),
         dimensions(2, 2),
         rtsp_server("0.0.0.0:8554"),
@@ -49,7 +49,7 @@ public:
         position(position) {
     }
     
-    constexpr FFmpeg() :
+    FFmpeg() :
         resolution(1920, 1080),
         dimensions(0, 0),
         rtsp_server("0.0.0.0:8554"),
@@ -57,9 +57,9 @@ public:
         bitrate("1G"),
         position(0, 0) {
     }
-    constexpr ~FFmpeg() = default;
+    ~FFmpeg() = default;
 
-    constexpr std::string uri() const {
+    std::string uri() {
         const auto [x, y] = position;
         return std::format("rtsp://0.0.0.0:8554/frame/{}/{}", x, y);
     }
