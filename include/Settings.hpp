@@ -1,9 +1,7 @@
 #pragma once
 
-#include <filesystem>
 #include <spdlog/common.h>
 #include <spdlog/spdlog.h>
-#include <tuple>
 #include <string>
 
 #include "HyperwallArguments.hpp"
@@ -13,8 +11,7 @@
 namespace asck {
 
 
-struct Settings {
-protected:
+class Settings {
 public:
     const coordinate resolution;
     const coordinate dimensions;

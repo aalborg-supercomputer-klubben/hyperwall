@@ -9,7 +9,6 @@ class WebcamSource : public VideoSourceT {
 public:
     WebcamSource(const int);
     virtual cv::Mat read() override;
-    virtual std::unique_ptr<VideoSourceT> clone() const override;
 };
 
 } // Hyperwall

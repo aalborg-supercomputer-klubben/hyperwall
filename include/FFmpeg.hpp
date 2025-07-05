@@ -20,7 +20,7 @@ public:
     const std::string bitrate;
 
 
-    FFmpeg(Settings settings, coordinate position) :
+    FFmpeg(const Settings& settings, const coordinate position) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
         rtsp_server(settings.rtsp_server),
@@ -30,7 +30,7 @@ public:
 
     }
 
-    FFmpeg(Settings settings) :
+    FFmpeg(const Settings& settings) :
         resolution(settings.resolution),
         dimensions(settings.dimensions),
         rtsp_server(settings.rtsp_server),
@@ -40,7 +40,7 @@ public:
 
     }
 
-    FFmpeg(coordinate position) :
+    FFmpeg(const coordinate position) :
         resolution(1920, 1080),
         dimensions(2, 2),
         rtsp_server("0.0.0.0:8554"),

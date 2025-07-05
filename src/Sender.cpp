@@ -12,35 +12,35 @@
 
 using namespace asck;
 
+VideoSourceT& getVideoSource(const Settings& settings) {
+    switch(settings.mode) {
+        default:
+        case Mode::File: {
+            static FileSource source(settings.file);
+            return source;
+        }
+        case Mode::Screenshare: {
+            static FileSource source("tcp://0.0.0.0:8600?listen");
+            return source;
+        }
+        case Mode::Webcam: {
+            static WebcamSource source(0);
+            return source;
+        }
+    }
+}
+
 int main(const int argc, const char* argv[]) {
-    HyperwallArguments arguments(argc, argv);
-    Settings settings(arguments);
+    const HyperwallArguments arguments(argc, argv);
+    const Settings settings(arguments);
     spdlog::set_level(settings.loglevel);
 
     std::cout << "Log level: " << settings.loglevel << std::endl;
     spdlog::debug("Generating settings");
 
-    auto hyperwall = [](Settings settings) {
-        spdlog::info("Chosen mode: {}", fromMode(settings.mode));
-        switch (settings.mode) {
-            case Mode::Webcam: {
-                WebcamSource source(0);
-                Hyperwall hyperwall(source, settings);
-                return hyperwall;
-            }
-            case Mode::Screenshare: {
-                FileSource source("tcp://0.0.0.0:8600?listen");
-                Hyperwall hyperwall(source, settings);
-                return hyperwall;
-            }
-            case Mode::File:
-            default: {
-                FileSource source(settings.file);
-                Hyperwall hyperwall(source, settings);
-                return hyperwall;
-            }
-        }
-    }(settings);
+    auto& source = getVideoSource(settings);
+    Hyperwall hyperwall(source, settings);
+
     {
         hyperwall.run();
     }

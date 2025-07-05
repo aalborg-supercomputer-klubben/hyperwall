@@ -5,12 +5,11 @@ namespace asck {
 
 class HyperFrame {
     const coordinate position;
-    const coordinate dimensions;
-    const coordinate resolution;
+    const Settings& settings;
     FFmpeg ffmpeg;
 public:
     HyperFrame(const HyperFrame&);
-    HyperFrame(const coordinate&, Settings&, FFmpeg&);
+    HyperFrame(const coordinate&, const Settings&, FFmpeg&);
     void run(const cv::Mat&);
 };
 

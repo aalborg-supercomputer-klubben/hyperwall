@@ -6,13 +6,12 @@
 
 namespace asck {
 
-class Hyperwall {
-    std::unique_ptr<VideoSourceT> source;
-    std::vector<HyperFrame> frames;
-    const coordinate dimensions;
-public:
-    Hyperwall(VideoSourceT&, Settings&);
-    void run();
-};
+    class Hyperwall {
+        VideoSourceT& source;
+        std::vector<HyperFrame> frames;
+    public:
+        Hyperwall(VideoSourceT&, const Settings&);
+        void run();
+    };
 
 } // Hyperwall

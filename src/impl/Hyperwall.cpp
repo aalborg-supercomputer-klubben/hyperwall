@@ -1,13 +1,13 @@
 #include <spdlog/spdlog.h>
 
+#include "Sources/VideoSource.hpp"
 #include "Utils.hpp"
 #include "FFmpeg.hpp"
 #include "Hyperwall.hpp"
 
 using namespace asck;
 
-Hyperwall::Hyperwall(VideoSourceT& source, Settings& settings) :
-    source(source.clone()) {
+Hyperwall::Hyperwall(VideoSourceT& source, const Settings& settings) : source(source) {
     spdlog::info("Generating hyperwall...");
     const auto& [res_x, res_y] = settings.resolution;
     const auto& [X, Y] = settings.dimensions;
@@ -22,7 +22,7 @@ Hyperwall::Hyperwall(VideoSourceT& source, Settings& settings) :
 void Hyperwall::run() {
     spdlog::info("Running Hyperwall");
     while(true) {
-        auto image = source->read();
+        auto image = source.read();
         if (image.rows == 0 || image.cols == 0) {
             break;
         }
