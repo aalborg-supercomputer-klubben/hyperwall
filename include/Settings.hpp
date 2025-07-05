@@ -1,66 +1,112 @@
 #pragma once
 
-#include <tuple>
+#include <spdlog/common.h>
+#include <spdlog/spdlog.h>
 #include <string>
 
-namespace Hyperwall {
+#include "HyperwallArguments.hpp"
+#include "Utils.hpp"
+#include "Mode.hpp"
 
-typedef std::tuple<int, int> coordinate;
+namespace asck {
 
-struct Settings {
+
+class Settings {
 public:
     const coordinate resolution;
     const coordinate dimensions;
     const std::string rtsp_server;
     const std::string bitrate;
     const unsigned int framerate;
+    const std::string file;
+    const Mode mode;
+    const spdlog::level::level_enum loglevel;
 
-    constexpr Settings(const coordinate& resolution, const coordinate& dimensions, const std::string rtsp_server, const std::string bitrate, const unsigned int framerate) :
+    constexpr Settings(const coordinate resolution, const coordinate dimensions, const std::string rtsp_server, const std::string bitrate, const unsigned int framerate, const std::string file, Mode mode) :
         resolution(resolution),
         dimensions(dimensions),
         rtsp_server(rtsp_server),
         bitrate(bitrate),
-        framerate(framerate) {
+        framerate(framerate),
+        file(file),
+        mode(mode),
+        loglevel(spdlog::level::level_enum::info) {
     }
 
-    constexpr Settings(const coordinate& resolution, const coordinate& dimensions, const std::string rtsp_server, const std::string bitrate) :
-        resolution(resolution),
-        dimensions(dimensions),
-        rtsp_server(rtsp_server),
-        bitrate(bitrate),
-        framerate(60) {
+    constexpr Settings(const coordinate resolution, const coordinate dimensions, const std::string rtsp_server, const std::string bitrate, const unsigned int framerate, const std::string file) :
+        Settings(
+            resolution,
+            dimensions,
+            rtsp_server,
+            bitrate,
+            framerate,
+            file,
+            Mode::File) {
     }
 
-    constexpr Settings(const coordinate& resolution, const coordinate& dimensions, const std::string rtsp_server) :
-        resolution(resolution),
-        dimensions(dimensions),
-        rtsp_server(rtsp_server),
-        bitrate("1G"),
-        framerate(60) {
+    constexpr Settings(const coordinate resolution, const coordinate dimensions, const std::string rtsp_server, const std::string bitrate, const unsigned int framerate) :
+        Settings(
+            resolution,
+            dimensions,
+            rtsp_server,
+            bitrate,
+            framerate,
+            "file.mp4"
+        ) {
     }
 
-    constexpr Settings(const coordinate& resolution, const coordinate& dimensions) :
-        resolution(resolution),
-        dimensions(dimensions),
-        rtsp_server("0.0.0.0:8554"),
-        bitrate("1G"),
-        framerate(60) {
+
+    constexpr Settings(const coordinate resolution, const coordinate dimensions, const std::string rtsp_server, const std::string bitrate) :
+        Settings(
+            resolution,
+            dimensions,
+            rtsp_server,
+            bitrate,
+            60
+        ) {
     }
-    
-    constexpr Settings(const coordinate& resolution) :
-        resolution(resolution),
-        dimensions({2, 2}),
-        rtsp_server("0.0.0.0:8554"),
-        bitrate("1G"),
-        framerate(60) {
+
+    constexpr Settings(const coordinate resolution, const coordinate dimensions, const std::string rtsp_server) :
+        Settings(
+            resolution,
+            dimensions,
+            rtsp_server,
+            "1G"
+        ) {
+
+        }
+
+
+    constexpr Settings(const coordinate resolution, const coordinate dimensions) :
+        Settings(
+            resolution,
+            dimensions,
+            "0.0.0.0:8554"
+        ) {
+    }
+
+    constexpr Settings(const coordinate resolution) :
+        Settings(
+            resolution,
+            {2, 2}
+        ) {
     }
 
     constexpr Settings() :
-        resolution({1920, 1080}),
-        dimensions({2, 2}),
-        rtsp_server("0.0.0.0:8554"),
-        bitrate("1G"),
-        framerate(60) {
+        Settings(
+            {1920, 1080}
+        ) {
+    }
+
+    constexpr Settings(const HyperwallArguments& arguments) :
+        resolution(splitResolution(arguments.get("--resolution"))),
+        dimensions(splitResolution(arguments.get("--dimensions"))),
+        rtsp_server(arguments.get("--rtsp-server")),
+        bitrate(arguments.get("--bitrate")),
+        framerate(arguments.get<int>("--framerate")),
+        loglevel(static_cast<spdlog::level::level_enum>(arguments.loglevel)),
+        file(arguments.get("--file")),
+        mode(toMode(arguments.get("mode"))) {
     }
 
     constexpr Settings(Settings& other) :
@@ -68,8 +114,12 @@ public:
         dimensions(other.dimensions),
         rtsp_server(other.rtsp_server),
         bitrate(other.bitrate),
-        framerate(other.framerate) {
+        framerate(other.framerate),
+        loglevel(other.loglevel),
+        file(other.file),
+        mode(other.mode) {
     }
+
 };
 
 }

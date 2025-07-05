@@ -11,6 +11,8 @@
 
 #include "Utils.hpp"
 
+using namespace asck;
+
 cv::VideoCapture await_capture(std::string path) {
     while(true) {
         cv::VideoCapture capture(path);
@@ -39,7 +41,7 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
     if(!parser.get<bool>("--test")) {
-        const auto [x, y] = Util::split_resolution(parser.get("coordinate"));
+        const auto [x, y] = splitResolution(parser.get("coordinate"));
         cv::VideoCapture capture = await_capture(std::format("rtsp://{}:8554/frame/{}/{}", parser.get("--address"), x, y));
         while(true)  {
             cv::Mat frame;
@@ -56,10 +58,10 @@ int main(int argc, char* argv[]) {
     else {
         // not particularly good
         std::vector<std::thread> threads;
-        const auto [X, Y] = Util::split_resolution(parser.get("coordinate"));
-        for(const auto& x : Util::range(X)) {
+        const auto [X, Y] = splitResolution(parser.get("coordinate"));
+        for(const auto& x : range(X)) {
 
-            for(const auto& y : Util::range(Y)) {
+            for(const auto& y : range(Y)) {
                 threads.push_back(std::thread{[x, y, &parser](){
                     spdlog::info("Running thread: {} {}", x, y);
                     auto capture = await_capture(std::format("rtsp://{}:8554/frame/{}/{}", parser.get<std::string>("--address"), x, y));

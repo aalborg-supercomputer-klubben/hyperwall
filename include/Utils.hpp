@@ -2,8 +2,10 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
-namespace Util {
+namespace asck {
+typedef std::tuple<int, int> coordinate;
 
 template<typename T = int>
 constexpr std::vector<T> range(const int n) {
@@ -21,11 +23,29 @@ constexpr std::vector<T> range(const int start, const int end) {
     return values;
 }
 
-constexpr std::tuple<int, int> split_resolution(const std::string res) {
+constexpr std::tuple<int, int> splitResolution(const std::string res) {
     return {
         std::stoi(res.substr(0, res.find("x"))),
         std::stoi(res.substr(res.find("x")+1, res.size()))
     };
+}
+
+template<int number>
+constexpr bool isPerfectSquare() {
+    if (number < 0) {
+        return false;
+    } else {
+        auto root = static_cast<int>(std::sqrt(number));
+        return root * root == number;
+    }
+}
+
+template<int count>
+constexpr coordinate countToDimensions() {
+    static_assert(isPerfectSquare<count>(), "Count must be a perfect square");
+    int root = 1;
+    while (root * root < count) ++root;
+    return coordinate{root, root};
 }
 
 

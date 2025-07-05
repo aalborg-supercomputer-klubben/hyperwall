@@ -4,8 +4,10 @@
 #include "Settings.hpp"
 #include "Sources/FileSource.hpp"
 
+using namespace asck;
+
 TEST_CASE("Hyperwall") {
-    Hyperwall::FileSource source("file.mp4");
-    Hyperwall::Settings settings;
-    Hyperwall::Hyperwall wall(source, settings);
+    FileSource source("file.mp4");
+    Settings settings;
+    Hyperwall wall(source, settings);
 }

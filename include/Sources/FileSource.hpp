@@ -2,15 +2,14 @@
 
 #include "Sources/VideoSource.hpp"
 
-namespace Hyperwall {
+namespace asck {
 
 class FileSource : public VideoSourceT {
     cv::VideoCapture capture;
 
 public:
-    FileSource(std::string);
+    FileSource(const std::string);
     virtual cv::Mat read() override;
-    virtual std::unique_ptr<VideoSourceT> clone() const override;
 };
 
 } // Hyperwall

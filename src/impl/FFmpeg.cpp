@@ -5,7 +5,9 @@
 
 #include "FFmpeg.hpp"
 
-const void Hyperwall::FFmpeg::open() {
+using namespace asck;
+
+const void FFmpeg::open() {
     const auto [res_x, res_y] = resolution;
     const auto [x, y] = position;
     const auto [X, Y] = dimensions;
@@ -26,7 +28,7 @@ const void Hyperwall::FFmpeg::open() {
     buffer = popen(ss.str().c_str(), "w");
 }
 
-const void Hyperwall::FFmpeg::write(const cv::Mat& mat) const {
+const void FFmpeg::write(const cv::Mat& mat) const {
     fwrite(mat.data, 1, mat.cols * mat.rows * 3, buffer);
     fflush(buffer);
 }

@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 set(PROJECT_IMPLEMENTATIONS
     src/impl/FFmpeg.cpp
     src/impl/Sources.cpp
+    src/impl/Hyperframe.cpp
     src/impl/Hyperwall.cpp
 )
 set(CMAKE_CXX_FLAGS "-O3")
